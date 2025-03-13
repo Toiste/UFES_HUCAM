@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação de resíduos</title>
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Header -->
+<header class="bg-dark text-white text-center py-3">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <img src="IFES.png" alt="Company Logo" class="img-fluid">
+            </div>
+            <div class="col-6">
+                <img src="UFES.png" alt="Company Logo" class="img-fluid">
+            </div>
+
+        </div>
+
+    </div>
+</header>
+
+<!-- Main Game Area -->
+<div class="container text-center mt-5">
+    <h1 class="mb-4">Classificação de resíduos</h1>
+    <div id="step-container" class="mb-4">
+        <p class="h4 mb-3">Qual o grupo correto para:</p>
+        <p id="trash-name" style="font-style: italic" class="h4 mb-3"></p>
+        <div id="options-container" class="d-flex justify-content-center flex-wrap mb-3"></div>
+    </div>
+    <div id="result-container" class="mt-4" style="display: none;">
+        <h2>Resultado</h2>
+        <p id="score" class="h5"></p>
+    </div>
+    <div id="step-counter-container" class="mb-4">
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar-step" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<footer class="bg-dark text-dark text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-1">Contato: <a href="mailto:teste@email.com" class="text-dark">teste@email.com</a></p>
+        <p class="mb-0">Telefones: (27) 3333-3333 - (27) 99999-9999</p>
+    </div>
+</footer>
+
+<!-- Bootstrap 4 JS and dependencies -->
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+/* Background with a backdrop */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://via.placeholder.com/1920x1080'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Game area backdrop */
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    flex: 1;
+}
+
+/* Header styling */
+header {
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+}
+
+header img {
+    max-height: 50px; /* Adjust logo height */
+}
+
+/* Footer styling */
+footer {
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+    margin-top: auto; /* Push footer to the bottom */
+}
+
+footer a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+footer a:hover {
+    color: #ddd;
+}
+
+/* Image button styling */
+.option-card {
+    margin: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.option-card:hover {
+    border-color: #007bff;
+    transform: scale(1.05);
+}
+
+.option-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.option-card p {
+    margin: 10px 0 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Estilo para acerto */
+.correct {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.2) !important; /* Fundo verde claro */
+}
+
+/* Estilo para erro */
+.incorrect {
+    border-color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.2) !important; /* Fundo vermelho claro */
+}
