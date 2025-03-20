@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação de resíduos</title>
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+
+<body style="padding: 50px 20px 0 20px;">
+<!-- Header -->
+
+<!-- Tela de Transição -->
+<div id="start-screen" class="start-screen">
+    <img src="assets/images/icones/hospital.png" alt="Imagem de introdução" class="start-image">
+    <h2>Bem-vindo ao Jogo da Reciclagem!</h2>
+    <p>Aprenda a descartar o lixo corretamente!</p>
+    <button id="start-button" class="start-button">Começar</button>
+</div>
+
+<!-- Main Game Area -->
+<div class="">
+    <div id="step-counter-container" class=" d-flex align-items-center mb-4">
+        <div>
+            <a href="/index.html"><img src="assets/images/icones/fechar.png" alt="fechar o jogo e voltar para página" style="width: 30px;"></a>
+        </div>
+        <div class="progress" style="width: 100%; height: 20px; border-radius: 10px; margin-left: 20px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+        </div>
+    </div>
+    <div id="step-container" style="margin-top: 40px;">
+        <div class="d-flex">
+            <img src="assets/images/enfermeira.JPG" alt="imagem da personagem enfermeira" style="width: 100px;">
+            <p class="h4 mb-3">Qual o grupo correto para:</p>
+        </div>
+        
+        <div class="d-flex justify-content-center" style="margin-top: 50px;">
+            <div class="container-trash">
+                <p id="trash-name" class="trash-text text-center mb-3"></p>
+            </div>
+        </div>
+        
+        
+    </div>
+    <div id="result-container" class="mt-4" style="display: none;">
+        <h2>Resultado</h2>
+        <p id="score" class="h5"></p>
+    </div>
+    
+</div>
+<div id="options-container" class="card-container"></div>
+<!-- Footer -->
+
+
+<!-- Bootstrap 4 JS and dependencies -->
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootstrap.bundle.min.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
