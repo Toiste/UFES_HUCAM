@@ -103,7 +103,7 @@ function selectGroup(selectedGroup, correctGroup) {
 }
 
 function showResults() {
-    resultContainer.style.display = "block";
+    resultContainer.style.display = "flex";
     scoreElement.textContent = `Você acertou todas as 10 questões!`;
 }
 
@@ -111,6 +111,7 @@ function nextStep() {
     currentStep++;
     loadStep();
 }
+
 
 // Inicializa o primeiro passo
 loadStep();

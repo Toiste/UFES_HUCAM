@@ -164,3 +164,55 @@ h2{
         transform: rotate(360deg);
     }
 }
+
+/* Fundo do Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Conteúdo do Modal */
+.modal-content {
+    display: flex;
+    justify-content: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animação de Fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mostrar o modal */
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* Botão de fechar */
+#close-modal {
+    margin-top: 10px;
+}
+

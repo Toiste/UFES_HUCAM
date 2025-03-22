@@ -2,9 +2,6 @@ body {
     font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -96,7 +93,16 @@ footer a:hover {
 .card-container{
     display: flex;
     justify-content: space-between;
-    margin: auto 0 150px 0;
+    min-width: 330px;
+    max-width: 600px;
+    flex-grow: 1; /* Faz com que o elemento cresça se houver espaço */
+}
+
+.sucesso{
+    margin-top: 80px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .trash-text{

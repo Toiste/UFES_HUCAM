@@ -20,6 +20,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
+
+<!-- Modal de Como Jogar -->
+<div id="game-rules-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div style="padding-bottom: 30px;">
+            <h2 class="text-center" style="font-size: 18px; font-weight: 700;">Como Jogar</h2>
+            <p class="text-center" style="font-size: 14px;">Aprenda a classificar corretamente os resíduos hospitalares.</p>
+        </div>
+        
+        <div class="d-flex flex-column justify-content-start">
+            <h3 class="pb-2" style="font-size: 16px;">Regras do Jogo:</h3>
+            <ul style="padding: 0 0 0 20px; font-size: 14px; color: #646464;">
+                <li>Observe o item hospitalar apresentado.</li>
+                <li>Selecione a lixeira correta para o descarte.</li>
+                <li>Ganhe pontos por cada resposta correta.</li>
+                <li>Aprenda sobre os diferentes tipos de resíduos hospitalares.</li>
+            </ul>
+
+        </div>
+        
+
+        <h3 class="pb-4">Tipos de Resíduos:</h3>
+        <ul class="d-flex flex-column" style="list-style: none; padding: 0 0 0 0; font-size: 14px; flex-wrap: wrap; height: 80px; gap: 5px;">
+            <li>🟡 Biológico</li>
+            <li>🟠 Químicos</li>
+            <li>⚪ Comuns</li>
+            <li>🔴 Perfurocortantes</li>
+            <li>🔵 Recicláveis</li>
+        </ul>
+
+        <button id="close-modal" class="btn btn-danger">Fechar</button>
+    </div>
+</div>
+
 <body>
     <!-- Header -->
     <header class=" d-flex justify-content-center align-items-center">
@@ -48,9 +82,10 @@
                 <button type="button" class="btn" style="width: 48%; height: 50px; background-color: #58CC02; color: #ffff;" onclick="window.location.href='game.html'">
                     Iniciar Jogo
                 </button>
-                <button type="button" class="btn btn-outline-secondary" style="width: 48%; height: 50px;" >
+                <button type="button" class="btn btn-outline-secondary" style="width: 48%; height: 50px;" id="open-modal">
                     Como Jogar
                 </button>
+                
             </div>
             
         </div>
@@ -120,5 +155,6 @@
 <!-- Bootstrap 4 JS and dependencies -->
 <script src="jquery-3.6.0.min.js"></script>
 <script src="bootstrap.bundle.min.js"></script>
+<script type="module" src="script_main.js"></script>
 </body>
 </html>
