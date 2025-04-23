@@ -30,7 +30,7 @@ function removerVida() {
     vidasAtuais -= 1
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
     if (vidasAtuais < 0) vidasAtuais = 0
-    vidas.innerHTML = `<span  style="font-size: 50px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
+    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
     if (vidasAtuais === 0) {
         showResults()
     }
