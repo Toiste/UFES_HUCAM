@@ -1,4 +1,4 @@
-import { trashGroups, trashListOrig } from "./data/trashData.js";
+import {trashGroups, trashListOrig} from "./data/trashData.js";
 
 const trashList = [...trashListOrig];
 
@@ -26,15 +26,16 @@ function updateProgress() {
     questionCounter.innerText = `(${currentStep}/${trashListOrig.length})`
 }
 
-function removerVida(){
-    vidasAtuais -=1
+function removerVida() {
+    vidasAtuais -= 1
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
-    if(vidasAtuais < 0) vidasAtuais = 0
+    if (vidasAtuais < 0) vidasAtuais = 0
     vidas.innerHTML = `<span  style="font-size: 50px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
-    if(vidasAtuais === 0){
+    if (vidasAtuais === 0) {
         showResults()
     }
 }
+
 /*Carrega cada passo de pergunta
 * Isso envolve:
 * - Atualiza a barra de progresso
@@ -46,12 +47,12 @@ function removerVida(){
 * */
 function loadStep() {
     updateProgress();
-    
+
     if (trashList.length !== 0) {
         //Pega um indice aleatorio das perguntas faltantes
         const randomIndex = Math.floor(Math.random() * trashList.length);
         const currentTrash = {...trashList[randomIndex]};
-        trashList.splice(randomIndex,1) //Remove a pergunta atual do "pool" de possíveis perguntas
+        trashList.splice(randomIndex, 1) //Remove a pergunta atual do "pool" de possíveis perguntas
 
         trashNameElement.textContent = `${currentTrash.name}`;
         optionsContainer.innerHTML = "";
@@ -59,6 +60,8 @@ function loadStep() {
         const answerOptions = [...trashGroups];
 
         answerOptions.forEach(group => {
+            if (currentTrash.hideGroups.length > 0 && currentTrash.hideGroups.includes(group.name))
+                return
             const card = document.createElement("div");
             card.classList.add("option-card");
             card.innerHTML = `
@@ -76,9 +79,9 @@ function loadStep() {
 }
 
 // Tela de transição com animação
-document.getElementById("start-button").addEventListener("click", function() {
+document.getElementById("start-button").addEventListener("click", function () {
     const startScreen = document.getElementById("start-screen");
-    
+
     startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
 
     setTimeout(() => {
@@ -90,7 +93,7 @@ document.getElementById("start-button").addEventListener("click", function() {
 });
 
 //TODO: REMOVER, apenas para debug
-document.getElementById("start-button").click()
+// document.getElementById("start-button").click()
 
 function selectGroup(selectedGroup, correctGroup) {
     const cards = optionsContainer.querySelectorAll(".option-card");
@@ -107,12 +110,11 @@ function selectGroup(selectedGroup, correctGroup) {
 
     if (selectedGroup === correctGroup) {
         correctAnswers++;
-    }
-    else{
+    } else {
         removerVida()
     }
 
-    setTimeout(nextStep,500)
+    setTimeout(nextStep, 500)
 }
 
 function showResults() {
@@ -121,13 +123,12 @@ function showResults() {
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
     correctAnswers = 0
-    if(correctAnswers === trashList.length)
+    if (correctAnswers === trashList.length)
         scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
-    else if(correctAnswers === 0){
+    else if (correctAnswers === 0) {
         resultTitle.textContent = "Não foi dessa vez!"
         scoreElement.textContent = `Você não acertou nenhuma questão!`;
-    }
-    else
+    } else
         scoreElement.textContent = `Você acertou ${correctAnswers} de ${trashList.length} questões!`;
 }
 
