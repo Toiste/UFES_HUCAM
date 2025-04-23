@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classificação de resíduos</title>
+    <title>GRSS - Gerenciamento de Resíduo de Serviços de Saúde</title>
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
@@ -31,7 +31,7 @@
 <!-- Tela de Transição -->
 <div id="start-screen" class="start-screen">
     <img src="assets/images/icones/hospital.png" alt="Imagem de introdução" class="start-image">
-    <h2>Bem-vindo ao Jogo da Reciclagem!</h2>
+    <h2>Bem-vindo ao GRSS<br>Gerenciamento de Resíduo de Serviços de Saúde!</h2>
     <p>Aprenda a descartar o lixo corretamente!</p>
     <button id="start-button" class="start-button">Começar</button>
 </div>
@@ -42,9 +42,17 @@
         <div>
             <a><img src="assets/images/icones/fechar.png" alt="fechar o jogo e voltar para página" style="width: 30px; cursor: pointer;" onclick="window.location.href='index.html'"></a>
         </div>
+        <div id="question-counter" style="display: none">
+
+        </div>
         <div class="progress" style="width: 100%; height: 20px; border-radius: 10px; margin-left: 20px;">
             <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
         </div>
+
+
+    </div>
+    <div  id="vidas">
+        <span  style="font-size: 50px;transform: scale(.5,1)">&#129505;&nbsp;x7</span>
     </div>
     <div id="step-container" style="margin-top: 40px;">
         <div class="d-flex">
@@ -61,10 +69,12 @@
         
     </div>
     <div id="result-container" class="sucesso" style="display: none;">
-        <h2>Parabéns!!</h2>
+        <h2 id="result-title">Parabéns!!</h2>
         <img src="assets/images/icones/sucesso.gif" alt="gif de uma mão segurando um troféu" style="width: 100px;">
         <p id="score" class="h5"></p>
     </div>
+
+
     
 </div>
 <div class="d-flex justify-content-center" style="margin: auto 0 150px 0;">
@@ -75,8 +85,8 @@
 
 
 <!-- Bootstrap 4 JS and dependencies -->
-<script src="jquery-3.6.0.min.js"></script>
-<script src="bootstrap.bundle.min.js"></script>
-<script type="module" src="script.js"></script>
+<script src="js/vendors/jquery-3.6.0.min.js"></script>
+<script src="js/vendors/bootstrap.bundle.min.js"></script>
+<script type="module" src="js/script.js"></script>
 </body>
 </html>
