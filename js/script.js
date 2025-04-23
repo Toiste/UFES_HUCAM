@@ -1,16 +1,10 @@
-import { trashGroups, trashListOrig } from "./js/data/trashData.js";
+import { trashGroups, trashListOrig } from "./data/trashData.js";
 
-// Função para pegar 10 itens aleatórios da lista original
-function getRandomQuestions(list, numQuestions) {
-    const shuffled = list.sort(() => 0.5 - Math.random()); // Embaralha a lista
-    return shuffled.slice(0, numQuestions); // Retorna os primeiros 'numQuestions' itens
-}
-
-const trashList = getRandomQuestions([...trashListOrig], 10); // Pegando 10 perguntas aleatórias
+const trashList = [...trashListOrig];
 
 let currentStep = 0;
 let correctAnswers = 0;
-let currentTrash = null; // Armazena a questão atual
+let vidasAtuais = 7;
 
 const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
@@ -19,36 +13,56 @@ const resultContainer = document.getElementById("result-container");
 const scoreElement = document.getElementById("score");
 const progressElement = document.getElementById("progress-bar-step");
 const progressContainer = document.getElementById("step-counter-container");
+const questionCounter = document.getElementById("question-counter");
+const vidas = document.getElementById("vidas");
+const resultTitle = document.getElementById("result-title");
 
+//Atualiza a partir da quantidade de perguntas totais e quantas ja foram
 function updateProgress() {
-    const currProgress = Math.round((100 / 10) * correctAnswers); // Só avança quando acerta
+    const currProgress = Math.round((100 / trashListOrig.length) * currentStep);
     progressElement.style.width = `${currProgress}%`;
     progressElement.setAttribute("aria-valuenow", `${currProgress}`);
     progressElement.innerText = `${currProgress}%`;
+    questionCounter.innerText = `(${currentStep}/${trashListOrig.length})`
 }
 
+function removerVida(){
+    vidasAtuais -=1
+    //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
+    if(vidasAtuais < 0) vidasAtuais = 0
+    vidas.innerHTML = `<span  style="font-size: 50px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
+    if(vidasAtuais === 0){
+        showResults()
+    }
+}
+/*Carrega cada passo de pergunta
+* Isso envolve:
+* - Atualiza a barra de progresso
+* - Caso ainda tenham perguntas:
+*   - Pegar uma aleatória da lista
+*   - Criar os cards de respostas
+* - Caso as perguntas tenham terminado:
+*   - Mostrar resultados
+* */
 function loadStep() {
     updateProgress();
     
     if (trashList.length !== 0) {
-        currentTrash = trashList.shift(); // Pega o primeiro da fila
+        //Pega um indice aleatorio das perguntas faltantes
+        const randomIndex = Math.floor(Math.random() * trashList.length);
+        const currentTrash = {...trashList[randomIndex]};
+        trashList.splice(randomIndex,1) //Remove a pergunta atual do "pool" de possíveis perguntas
 
         trashNameElement.textContent = `${currentTrash.name}`;
         optionsContainer.innerHTML = "";
 
-        // Pega o grupo correto e dois errados aleatórios
-        const correctGroup = trashGroups.find(group => group.name === currentTrash.group);
-        const wrongGroups = trashGroups.filter(group => group.name !== currentTrash.group)
-                                       .sort(() => 0.5 - Math.random())
-                                       .slice(0, 2);
-
-        const answerOptions = [correctGroup, ...wrongGroups].sort(() => 0.5 - Math.random());
+        const answerOptions = [...trashGroups];
 
         answerOptions.forEach(group => {
             const card = document.createElement("div");
             card.classList.add("option-card");
             card.innerHTML = `
-                <img src="${group.image}" alt="${group.name}">
+                <img src="assets/images/${group.image}" alt="${group.name}">
                 <p>${group.name}</p>
             `;
             card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
@@ -56,8 +70,7 @@ function loadStep() {
         });
 
     } else {
-        stepContainer.style.display = "none";
-        progressContainer.style.display = "none";
+
         showResults();
     }
 }
@@ -76,7 +89,8 @@ document.getElementById("start-button").addEventListener("click", function() {
     }, 1000); // Tempo deve ser igual ao da animação (1s)
 });
 
-
+//TODO: REMOVER, apenas para debug
+document.getElementById("start-button").click()
 
 function selectGroup(selectedGroup, correctGroup) {
     const cards = optionsContainer.querySelectorAll(".option-card");
@@ -93,18 +107,28 @@ function selectGroup(selectedGroup, correctGroup) {
 
     if (selectedGroup === correctGroup) {
         correctAnswers++;
-        updateProgress(); // Atualiza barra de progresso
-        setTimeout(nextStep, 500);
-    } else {
-        // Adiciona a pergunta de volta ao final da fila
-        trashList.push(currentTrash);
-        setTimeout(loadStep, 500);
     }
+    else{
+        removerVida()
+    }
+
+    setTimeout(nextStep,500)
 }
 
 function showResults() {
+    stepContainer.style.display = "none";
+    progressContainer.style.display = "none";
+    optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
-    scoreElement.textContent = `Você acertou todas as 10 questões!`;
+    correctAnswers = 0
+    if(correctAnswers === trashList.length)
+        scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
+    else if(correctAnswers === 0){
+        resultTitle.textContent = "Não foi dessa vez!"
+        scoreElement.textContent = `Você não acertou nenhuma questão!`;
+    }
+    else
+        scoreElement.textContent = `Você acertou ${correctAnswers} de ${trashList.length} questões!`;
 }
 
 function nextStep() {

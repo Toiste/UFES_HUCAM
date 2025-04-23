@@ -69,3 +69,11 @@ export const trashGroups = [
     {name: GrupoE, image: "GrupoE.jpg"},
     {name: Reciclaveis, image: "GrupoReciclavel.jpg"},
 ];
+
+export const trashGroupImages = [
+    {[GrupoA]: "GrupoA.jpg"},
+    {[GrupoB]: "GrupoB.jpg"},
+    {[GrupoD]: "GrupoD.png"},
+    {[GrupoE]: "GrupoE.jpg"},
+    {[Reciclaveis]: "GrupoReciclavel.jpg"},
+];
