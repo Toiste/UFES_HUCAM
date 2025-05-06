@@ -16,6 +16,8 @@ export const trashListOrig = [
     {name: "GAZE COM SANGUE", group: GrupoA, hideGroups: []},
     {name: "GAZE COM SECREÇÃO", group: GrupoA, hideGroups: []},
     {name: "LUVAS", group: GrupoA, hideGroups: []},
+    {name: "LUVAS SEM CONTATO COM SANGUE OU LIQUIDOS CORPÓREOS", group: GrupoD, hideGroups: []},
+    {name: "LUVAS COM SANGUE OU LIQUIDOS COPÓREOS", group: GrupoA, hideGroups: []},
     {name: "CATETER ARTERIAL COM SANGUE SEM O GUIA", group: GrupoA, hideGroups: []},
     {name: "FRASCOS DE SORO E EQUIPOS USADOS", group: GrupoA, hideGroups: []},
     {name: "COBERTURA DE CURATIVOS COM SECREÇÃO OU SANGUE", group: GrupoA, hideGroups: []},
