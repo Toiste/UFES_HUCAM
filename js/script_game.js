@@ -12,6 +12,7 @@ let currentRoundLives = totalLivesPerRound;
 let currentQuestion = 0;
 let correctAnswers = 0;
 
+let startDateTime = new Date();
 
 //Se acertar a pergunta, passa para proxima pergunta/round
 function updateRoundAndQuestion() {
@@ -53,12 +54,15 @@ const roundCounter = document.getElementById("round-counter");
 const resultTitle = document.getElementById("result-title");
 const resultImg = document.getElementById("result-img");
 
+const timeTitle = document.getElementById("time-title");
+const timeImg = document.getElementById("time-img");
 
-const imgTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
+
+const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
+const gifTempo = {src: "assets/images/icones/relogio.gif", alt: "gif de relogio"}
 
 function updateRoundProgress() {
     const currProgress = Math.round((100 / rounds[currentRound].length) * (currentQuestion+1));
-    console.log("(100 / rounds[currentRound].length) * currentQuestion", (100 / rounds[currentRound].length) * currentQuestion);
 
     progressElement.style.width = `${currProgress}%`;
     progressElement.setAttribute("aria-valuenow", `${currProgress}`);
@@ -129,6 +133,7 @@ document.getElementById("start-button").addEventListener("click", function () {
 });
 
 document.getElementById("reset-button").addEventListener("click", function () {
+    startDateTime = new Date()
     currentRound = 0;
     currentQuestion = 0;
     currentRoundLives = totalLivesPerRound;
@@ -176,6 +181,30 @@ function hideResults() {
 }
 
 function showResults() {
+    const timespan = getTimeDifference(startDateTime, new Date());
+
+    const temHoras = timespan.hours > 0;
+    const temMinutos = timespan.minutes > 0;
+    const temSegundos = timespan.seconds > 0;
+    let txt = "Tempo total: ";
+    if(temHoras) {
+        txt += `${timespan.hours} horas`;
+        if(temMinutos && temSegundos) {
+            txt += ", "
+        }
+        else if(temMinutos || temSegundos){
+            txt+= " e "
+        }
+    }
+    if(temMinutos) {
+        txt += `${timespan.minutes} minutos`;
+        if (temSegundos) txt += " e "
+    }
+    if(temSegundos){
+        txt += `${timespan.seconds} segundos`;
+    }
+    timeTitle.innerText = txt;
+
     stepContainer.style.display = "none";
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
@@ -184,18 +213,18 @@ function showResults() {
     if (correctAnswers === totalQuestions) {
         resultTitle.textContent = "Parabéns!!";
         scoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
-        resultImg.src = imgTrofeu.src;
-        resultImg.alt = imgTrofeu.alt;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
     } else if (correctAnswers === 0) {
         resultTitle.textContent = "Não foi dessa vez!";
         scoreElement.textContent = `Você não acertou nenhuma questão!`;
-        resultImg.src = imgTrofeu.src;
-        resultImg.alt = imgTrofeu.alt;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
     } else {
         resultTitle.textContent = "Parabéns!!";
         scoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
-        resultImg.src = imgTrofeu.src;
-        resultImg.alt = imgTrofeu.alt;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
     }
 }
 
@@ -207,6 +236,30 @@ function nextStep() {
 
     loadStep();
 }
+
+export function getTimeDifference(startDate, endDate) {
+    // Calculate difference in milliseconds
+    const diffInMs = Math.abs(endDate - startDate);
+
+    // Convert to different units
+    const seconds = Math.floor(diffInMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    // Get remaining units after larger ones are accounted for
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+
+    return {
+        hours,
+        minutes: remainingMinutes,
+        seconds: remainingSeconds,
+        totalHours: diffInMs / (1000 * 60 * 60),
+        totalMinutes: diffInMs / (1000 * 60),
+        totalSeconds: diffInMs / 1000
+    };
+}
+
 
 // Inicializa o primeiro passo
 loadStep();
