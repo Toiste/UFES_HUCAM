@@ -122,7 +122,6 @@ function showResults() {
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
-    correctAnswers = 0
     if (correctAnswers === trashList.length)
         scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
     else if (correctAnswers === 0) {
