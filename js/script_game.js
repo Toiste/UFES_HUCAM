@@ -1,6 +1,6 @@
 import {trashGroups, trashListOrig} from "./data/trashData.js";
 
-const trashList = [...trashListOrig];
+let trashList = [...trashListOrig];
 
 let currentStep = 0;
 let correctAnswers = 0;
@@ -34,10 +34,11 @@ function removerVida() {
     vidasAtuais -= 1
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
     if (vidasAtuais < 0) vidasAtuais = 0
+    atualizarVidas()
+
+}
+function atualizarVidas(){
     vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
-    if (vidasAtuais === 0) {
-        showResults()
-    }
 }
 
 /*Carrega cada passo de pergunta
@@ -51,35 +52,29 @@ function removerVida() {
 * */
 function loadStep() {
     updateProgress();
+    //Pega um indice aleatorio das perguntas faltantes
+    const randomIndex = Math.floor(Math.random() * trashList.length);
+    const currentTrash = {...trashList[randomIndex]};
+    trashList.splice(randomIndex, 1) //Remove a pergunta atual do "pool" de possíveis perguntas
 
-    if (trashList.length !== 0) {
-        //Pega um indice aleatorio das perguntas faltantes
-        const randomIndex = Math.floor(Math.random() * trashList.length);
-        const currentTrash = {...trashList[randomIndex]};
-        trashList.splice(randomIndex, 1) //Remove a pergunta atual do "pool" de possíveis perguntas
+    trashNameElement.textContent = `${currentTrash.name}`;
+    optionsContainer.innerHTML = "";
 
-        trashNameElement.textContent = `${currentTrash.name}`;
-        optionsContainer.innerHTML = "";
+    const answerOptions = [...trashGroups];
 
-        const answerOptions = [...trashGroups];
+    answerOptions.forEach(group => {
+        if (currentTrash.hideGroups.length > 0 && currentTrash.hideGroups.includes(group.name))
+            return
+        const card = document.createElement("div");
+        card.classList.add("option-card");
+        card.innerHTML = `
+            <img src="assets/images/${group.image}" alt="${group.name}">
+            <p>${group.name}</p>
+        `;
+        card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
+        optionsContainer.appendChild(card);
+    });
 
-        answerOptions.forEach(group => {
-            if (currentTrash.hideGroups.length > 0 && currentTrash.hideGroups.includes(group.name))
-                return
-            const card = document.createElement("div");
-            card.classList.add("option-card");
-            card.innerHTML = `
-                <img src="assets/images/${group.image}" alt="${group.name}">
-                <p>${group.name}</p>
-            `;
-            card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
-            optionsContainer.appendChild(card);
-        });
-
-    } else {
-
-        showResults();
-    }
 }
 
 // Tela de transição com animação
@@ -96,9 +91,20 @@ document.getElementById("start-button").addEventListener("click", function () {
     }, 1000); // Tempo deve ser igual ao da animação (1s)
 });
 
-//TODO: REMOVER, apenas para debug
-// document.getElementById("start-button").click()
+document.getElementById("reset-button").addEventListener("click", function () {
+    currentStep = 0;
+    correctAnswers = 0;
+    vidasAtuais = 7;
+    trashList = [...trashListOrig];
+    atualizarVidas()
+    hideResults()
+    loadStep()
+});
 
+//TODO: REMOVER, apenas para debug
+document.getElementById("start-button").click()
+// showResults()
+///
 function selectGroup(selectedGroup, correctGroup) {
     const cards = optionsContainer.querySelectorAll(".option-card");
     cards.forEach(card => {
@@ -118,7 +124,15 @@ function selectGroup(selectedGroup, correctGroup) {
         removerVida()
     }
 
+
     setTimeout(nextStep, 500)
+}
+
+function hideResults(){
+    stepContainer.style.removeProperty("display");
+    progressContainer.style.removeProperty("display");
+    optionsContainer.style.removeProperty("display");
+    resultContainer.style.display = "none";
 }
 
 function showResults() {
@@ -126,7 +140,7 @@ function showResults() {
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
-    
+
     if (correctAnswers === trashList.length) {
         resultTitle.textContent = "Parabéns!!";
         scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
@@ -147,6 +161,11 @@ function showResults() {
 }
 
 function nextStep() {
+    if (vidasAtuais === 0 || trashList.length === 0) {
+        updateProgress();
+        showResults()
+        return;
+    }
     currentStep++;
     loadStep();
 }
