@@ -102,7 +102,7 @@ document.getElementById("reset-button").addEventListener("click", function () {
 });
 
 //TODO: REMOVER, apenas para debug
-document.getElementById("start-button").click()
+// document.getElementById("start-button").click()
 // showResults()
 ///
 function selectGroup(selectedGroup, correctGroup) {
