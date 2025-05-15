@@ -5,6 +5,9 @@ const GrupoE = "Resíduos perfurocortantes";
 const GrupoBE = "Perfurocortante para resíduo químico";
 const Reciclaveis = "Reciclaveis";
 
+export const totalRounds = 5
+export const questionsPerRound = 10;
+
 // const GrupoA = "Grupo A - Resíduo Biológico - Infectante";
 // const GrupoB = "Grupo B - Resíduos químicos";
 // const GrupoD = "Grupo D - Resíduos Comuns";
@@ -73,3 +76,27 @@ export const trashGroups = [
     {name: GrupoE, image: "GrupoE.jpg"},
     {name: Reciclaveis, image: "GrupoReciclavel.jpg"},
 ];
+
+export function generateRandomRounds(){
+    //Copies original list to manipulate
+    const trashList = [...trashListOrig]
+    const roundList = [];
+    for (let r = 0; r < totalRounds; r++){
+        const round = []
+        for (let q = 0; q < questionsPerRound; q++){
+            //If the list doesnt have more questions, return the current round list
+            if(trashList.length === 0) {
+                //If the round has any questions, adds the current round before returning
+                if(round.length !== 0) roundList.push(round)
+                return roundList;
+            }
+            const randomIndex = Math.floor(Math.random() * trashList.length);
+            const currentTrash =  {...trashList[randomIndex]};
+            trashList.splice(randomIndex, 1) //Remove a pergunta atual do "pool" de possíveis perguntas
+            round.push(currentTrash)
+        }
+        roundList.push(round)
+    }
+    return roundList;
+
+}

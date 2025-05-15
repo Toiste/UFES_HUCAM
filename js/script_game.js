@@ -1,10 +1,44 @@
-import {trashGroups, trashListOrig} from "./data/trashData.js";
+import {generateRandomRounds, trashGroups} from "./data/trashData.js";
 
-let trashList = [...trashListOrig];
+let rounds = generateRandomRounds()
 
-let currentStep = 0;
+const totalQuestions = rounds.flat().length;
+const answerOptions = [...trashGroups];
+const totalLivesPerRound = 5;
+
+
+let currentRound = 0;
+let currentRoundLives = totalLivesPerRound;
+let currentQuestion = 0;
 let correctAnswers = 0;
-let vidasAtuais = 7;
+
+
+//Se acertar a pergunta, passa para proxima pergunta/round
+function updateRoundAndQuestion() {
+    const round = rounds[currentRound];
+    const lastRound = rounds.length - 1;
+
+    const roundQuestionsNum = round.length;
+    const lastQuestion = roundQuestionsNum - 1;
+
+    //If its the last question of the round
+    if (currentQuestion === lastQuestion) {
+        //And If its the last round, terminates the game
+        if (currentRound === lastRound) {
+            return true;
+        }
+        //If not, proceeds to the next round
+        currentRound++;
+        currentQuestion = 0;
+        currentRoundLives = totalLivesPerRound;
+        atualizarVidas()
+        return false;
+    }
+
+    //If its not the end of the round, goes to the next question
+    currentQuestion++;
+    return false;
+}
 
 const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
@@ -13,32 +47,38 @@ const resultContainer = document.getElementById("result-container");
 const scoreElement = document.getElementById("result-score");
 const progressElement = document.getElementById("progress-bar-step");
 const progressContainer = document.getElementById("step-counter-container");
-const questionCounter = document.getElementById("question-counter");
 const vidas = document.getElementById("vidas");
+const roundCounter = document.getElementById("round-counter");
+
 const resultTitle = document.getElementById("result-title");
 const resultImg = document.getElementById("result-img");
 
 
-const imgTrofeu = {src:"assets/images/icones/sucesso.gif", alt:"gif de uma mão segurando um troféu"}
+const imgTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
 
-//Atualiza a partir da quantidade de perguntas totais e quantas ja foram
-function updateProgress() {
-    const currProgress = Math.round((100 / trashListOrig.length) * currentStep);
+function updateRoundProgress() {
+    const currProgress = Math.round((100 / rounds[currentRound].length) * (currentQuestion+1));
+    console.log("(100 / rounds[currentRound].length) * currentQuestion", (100 / rounds[currentRound].length) * currentQuestion);
+
     progressElement.style.width = `${currProgress}%`;
     progressElement.setAttribute("aria-valuenow", `${currProgress}`);
     progressElement.innerText = `${currProgress}%`;
-    questionCounter.innerText = `(${currentStep}/${trashListOrig.length})`
+}
+
+function updateRoundNumber() {
+    roundCounter.innerText = `Round ${currentRound + 1}`
 }
 
 function removerVida() {
-    vidasAtuais -= 1
+    currentRoundLives -= 1
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
-    if (vidasAtuais < 0) vidasAtuais = 0
+    if (currentRoundLives < 0) currentRoundLives = 0
     atualizarVidas()
 
 }
-function atualizarVidas(){
-    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${vidasAtuais}</span>`
+
+function atualizarVidas() {
+    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${currentRoundLives}</span>`
 }
 
 /*Carrega cada passo de pergunta
@@ -51,16 +91,13 @@ function atualizarVidas(){
 *   - Mostrar resultados
 * */
 function loadStep() {
-    updateProgress();
-    //Pega um indice aleatorio das perguntas faltantes
-    const randomIndex = Math.floor(Math.random() * trashList.length);
-    const currentTrash = {...trashList[randomIndex]};
-    trashList.splice(randomIndex, 1) //Remove a pergunta atual do "pool" de possíveis perguntas
+    updateRoundProgress();
+    updateRoundNumber();
+    atualizarVidas();
+    const currentTrash = rounds[currentRound][currentQuestion];
 
     trashNameElement.textContent = `${currentTrash.name}`;
     optionsContainer.innerHTML = "";
-
-    const answerOptions = [...trashGroups];
 
     answerOptions.forEach(group => {
         if (currentTrash.hideGroups.length > 0 && currentTrash.hideGroups.includes(group.name))
@@ -92,18 +129,22 @@ document.getElementById("start-button").addEventListener("click", function () {
 });
 
 document.getElementById("reset-button").addEventListener("click", function () {
-    currentStep = 0;
-    correctAnswers = 0;
-    vidasAtuais = 7;
-    trashList = [...trashListOrig];
+    currentRound = 0;
+    currentQuestion = 0;
+    currentRoundLives = totalLivesPerRound;
+    rounds = generateRandomRounds()
     atualizarVidas()
     hideResults()
     loadStep()
 });
 
-//TODO: REMOVER, apenas para debug
-// document.getElementById("start-button").click()
-// showResults()
+//OBS: Apenas para debug
+if (window.location.hostname === "localhost") {
+    document.getElementById("start-button").click()
+    // showResults()
+}
+
+
 ///
 function selectGroup(selectedGroup, correctGroup) {
     const cards = optionsContainer.querySelectorAll(".option-card");
@@ -124,11 +165,10 @@ function selectGroup(selectedGroup, correctGroup) {
         removerVida()
     }
 
-
     setTimeout(nextStep, 500)
 }
 
-function hideResults(){
+function hideResults() {
     stepContainer.style.removeProperty("display");
     progressContainer.style.removeProperty("display");
     optionsContainer.style.removeProperty("display");
@@ -141,35 +181,32 @@ function showResults() {
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
 
-    if (correctAnswers === trashList.length) {
+    if (correctAnswers === totalQuestions) {
         resultTitle.textContent = "Parabéns!!";
-        scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
+        scoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
         resultImg.src = imgTrofeu.src;
         resultImg.alt = imgTrofeu.alt;
-    }
-    else if (correctAnswers === 0) {
+    } else if (correctAnswers === 0) {
         resultTitle.textContent = "Não foi dessa vez!";
         scoreElement.textContent = `Você não acertou nenhuma questão!`;
         resultImg.src = imgTrofeu.src;
         resultImg.alt = imgTrofeu.alt;
     } else {
         resultTitle.textContent = "Parabéns!!";
-        scoreElement.textContent = `Você acertou ${correctAnswers} de ${trashList.length} questões!`;
+        scoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
         resultImg.src = imgTrofeu.src;
         resultImg.alt = imgTrofeu.alt;
     }
 }
 
 function nextStep() {
-    if (vidasAtuais === 0 || trashList.length === 0) {
-        updateProgress();
-        showResults()
-        return;
+    updateRoundProgress();
+    if (currentRoundLives === 0 || updateRoundAndQuestion()) {
+        return showResults();
     }
-    currentStep++;
+
     loadStep();
 }
-
 
 // Inicializa o primeiro passo
 loadStep();
