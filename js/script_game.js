@@ -10,12 +10,16 @@ const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
 const stepContainer = document.getElementById("step-container");
 const resultContainer = document.getElementById("result-container");
-const scoreElement = document.getElementById("score");
+const scoreElement = document.getElementById("result-score");
 const progressElement = document.getElementById("progress-bar-step");
 const progressContainer = document.getElementById("step-counter-container");
 const questionCounter = document.getElementById("question-counter");
 const vidas = document.getElementById("vidas");
 const resultTitle = document.getElementById("result-title");
+const resultImg = document.getElementById("result-img");
+
+
+const imgTrofeu = {src:"assets/images/icones/sucesso.gif", alt:"gif de uma mão segurando um troféu"}
 
 //Atualiza a partir da quantidade de perguntas totais e quantas ja foram
 function updateProgress() {
@@ -122,13 +126,24 @@ function showResults() {
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
-    if (correctAnswers === trashList.length)
+    
+    if (correctAnswers === trashList.length) {
+        resultTitle.textContent = "Parabéns!!";
         scoreElement.textContent = `Você acertou todas as ${trashList.length} questões!`;
+        resultImg.src = imgTrofeu.src;
+        resultImg.alt = imgTrofeu.alt;
+    }
     else if (correctAnswers === 0) {
-        resultTitle.textContent = "Não foi dessa vez!"
+        resultTitle.textContent = "Não foi dessa vez!";
         scoreElement.textContent = `Você não acertou nenhuma questão!`;
-    } else
+        resultImg.src = imgTrofeu.src;
+        resultImg.alt = imgTrofeu.alt;
+    } else {
+        resultTitle.textContent = "Parabéns!!";
         scoreElement.textContent = `Você acertou ${correctAnswers} de ${trashList.length} questões!`;
+        resultImg.src = imgTrofeu.src;
+        resultImg.alt = imgTrofeu.alt;
+    }
 }
 
 function nextStep() {
