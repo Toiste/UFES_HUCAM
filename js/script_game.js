@@ -6,7 +6,6 @@ const totalQuestions = rounds.flat().length;
 const answerOptions = [...trashGroups];
 const totalLivesPerRound = 5;
 
-
 let currentRound = 0;
 let currentRoundLives = totalLivesPerRound;
 let currentQuestion = 0;
@@ -14,25 +13,25 @@ let correctAnswers = 0;
 
 let startDateTime = new Date();
 
-//Se acertar a pergunta, passa para proxima pergunta/round
-function updateRoundAndQuestion() {
+function wasLastQuestionOfRound(){
     const round = rounds[currentRound];
-    const lastRound = rounds.length - 1;
-
     const roundQuestionsNum = round.length;
     const lastQuestion = roundQuestionsNum - 1;
+    return currentQuestion === lastQuestion
+}
 
-    //If its the last question of the round
-    if (currentQuestion === lastQuestion) {
-        //And If its the last round, terminates the game
-        if (currentRound === lastRound) {
-            return true;
-        }
-        //If not, proceeds to the next round
+function wasLastQuestionOfLastRound(){
+    const lastRound = rounds.length - 1;
+
+    return wasLastQuestionOfRound() && currentRound === lastRound;
+}
+
+function updateCurrentRoundAndQuestion() {
+    if (wasLastQuestionOfRound()) {
         currentRound++;
         currentQuestion = 0;
         currentRoundLives = totalLivesPerRound;
-        atualizarVidas()
+
         return false;
     }
 
@@ -44,29 +43,59 @@ function updateRoundAndQuestion() {
 const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
 const stepContainer = document.getElementById("step-container");
+
 const resultContainer = document.getElementById("result-container");
-const scoreElement = document.getElementById("result-score");
-const progressElement = document.getElementById("progress-bar-step");
+const resultTitle = document.getElementById("result-title");
+const resultImg = document.getElementById("result-img");
+const resultScoreElement = document.getElementById("result-score");
+const resultTimeTitle = document.getElementById("time-title");
+
+const roundCompleteContainer = document.getElementById("round-complete-container");
+const roundCompleteTitle = document.getElementById("round-complete-title");
+
+const progressElementQuestion = document.getElementById("progress-bar-step-question");
+const progressRoundElement = document.getElementById("progress-bar-step-round");
 const progressContainer = document.getElementById("step-counter-container");
+
 const vidas = document.getElementById("vidas");
 const roundCounter = document.getElementById("round-counter");
 
-const resultTitle = document.getElementById("result-title");
-const resultImg = document.getElementById("result-img");
-
-const timeTitle = document.getElementById("time-title");
-const timeImg = document.getElementById("time-img");
-
-
 const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
-const gifTempo = {src: "assets/images/icones/relogio.gif", alt: "gif de relogio"}
 
-function updateRoundProgress() {
-    const currProgress = Math.round((100 / rounds[currentRound].length) * (currentQuestion+1));
+function updateRoundProgress(showFullProgressQuestion = false, showFullProgressRound = false) {
+    if(showFullProgressQuestion){
+        progressElementQuestion.style.width = `100%`;
+        progressElementQuestion.setAttribute("aria-valuenow", `100`);
+        progressElementQuestion.innerText = `100%`;
+    }
+    else{
+        const currProgressQuestion = Math.round((100 / rounds[currentRound].length) * (currentQuestion));
+        progressElementQuestion.style.width = `${currProgressQuestion}%`;
+        progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
+        progressElementQuestion.innerText = `${currProgressQuestion}%`;
+    }
 
-    progressElement.style.width = `${currProgress}%`;
-    progressElement.setAttribute("aria-valuenow", `${currProgress}`);
-    progressElement.innerText = `${currProgress}%`;
+    if(showFullProgressRound){
+        progressRoundElement.style.width = `100%`;
+        progressRoundElement.setAttribute("aria-valuenow", `100`);
+        progressRoundElement.innerText = `100%`;
+
+        progressElementQuestion.style.width = `100%`;
+        progressElementQuestion.setAttribute("aria-valuenow", `100`);
+        progressElementQuestion.innerText = `100%`;
+    }
+    else{
+        const currProgressRound = Math.round((100 / rounds.length) * (currentRound));
+
+        progressRoundElement.style.width = `${currProgressRound}%`;
+        progressRoundElement.setAttribute("aria-valuenow", `${currProgressRound}`);
+        progressRoundElement.innerText = `${currProgressRound}%`;
+    }
+
+
+
+
+
 }
 
 function updateRoundNumber() {
@@ -77,7 +106,7 @@ function removerVida() {
     currentRoundLives -= 1
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
     if (currentRoundLives < 0) currentRoundLives = 0
-    atualizarVidas()
+    // atualizarVidas()
 
 }
 
@@ -95,9 +124,8 @@ function atualizarVidas() {
 *   - Mostrar resultados
 * */
 function loadStep() {
-    updateRoundProgress();
-    updateRoundNumber();
-    atualizarVidas();
+    console.log(`Current Question: ${currentQuestion+1}(${currentQuestion})/${rounds[currentRound].length}`)
+    console.log(`Current Round: ${currentRound+1}(${currentRound})/${rounds.length}`)
     const currentTrash = rounds[currentRound][currentQuestion];
 
     trashNameElement.textContent = `${currentTrash.name}`;
@@ -141,6 +169,7 @@ document.getElementById("reset-button").addEventListener("click", function () {
     atualizarVidas()
     hideResults()
     loadStep()
+    updateThings()
 });
 
 //OBS: Apenas para debug
@@ -170,7 +199,17 @@ function selectGroup(selectedGroup, correctGroup) {
         removerVida()
     }
 
-    setTimeout(nextStep, 500)
+    setTimeout(()=>{
+        if(currentRoundLives === 0 || wasLastQuestionOfLastRound()){
+            return showResults();
+        }
+
+        if(wasLastQuestionOfRound()){
+            return showRoundComplete();
+        }
+
+        return nextStep()
+    },500)
 }
 
 function hideResults() {
@@ -180,7 +219,29 @@ function hideResults() {
     resultContainer.style.display = "none";
 }
 
+function showRoundComplete(){
+    updateThings(true)
+    stepContainer.style.display = "none";
+    progressContainer.style.display = "none";
+    optionsContainer.style.display = "none"
+    roundCompleteTitle.innerText = `Round ${currentRound+1} completo!`
+    roundCompleteContainer.style.display = "flex";
+
+    setTimeout(()=>{
+        stepContainer.style.removeProperty("display");
+        progressContainer.style.removeProperty("display");
+        optionsContainer.style.removeProperty("display");
+
+        roundCompleteTitle.innerText = ""
+        roundCompleteContainer.style.display = "none";
+        nextStep()
+    }, 3000)
+}
+
 function showResults() {
+    const isEnd = wasLastQuestionOfLastRound()
+    updateThings(isEnd, isEnd)
+
     const timespan = getTimeDifference(startDateTime, new Date());
 
     const temHoras = timespan.hours > 0;
@@ -203,7 +264,7 @@ function showResults() {
     if(temSegundos){
         txt += `${timespan.seconds} segundos`;
     }
-    timeTitle.innerText = txt;
+    resultTimeTitle.innerText = txt;
 
     stepContainer.style.display = "none";
     progressContainer.style.display = "none";
@@ -212,28 +273,25 @@ function showResults() {
 
     if (correctAnswers === totalQuestions) {
         resultTitle.textContent = "Parabéns!!";
-        scoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
+        resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
     } else if (correctAnswers === 0) {
         resultTitle.textContent = "Não foi dessa vez!";
-        scoreElement.textContent = `Você não acertou nenhuma questão!`;
+        resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
     } else {
         resultTitle.textContent = "Parabéns!!";
-        scoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
+        resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
     }
 }
 
 function nextStep() {
-    updateRoundProgress();
-    if (currentRoundLives === 0 || updateRoundAndQuestion()) {
-        return showResults();
-    }
-
+    updateCurrentRoundAndQuestion()
+    updateThings()
     loadStep();
 }
 
@@ -260,6 +318,11 @@ export function getTimeDifference(startDate, endDate) {
     };
 }
 
-
+function updateThings(showFullProgressQuestion = false, showFullProgressRound = false){
+    updateRoundProgress(showFullProgressQuestion, showFullProgressRound);
+    updateRoundNumber();
+    atualizarVidas();
+}
 // Inicializa o primeiro passo
+updateThings()
 loadStep();

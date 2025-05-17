@@ -6,7 +6,7 @@ const GrupoBE = "Perfurocortante para resíduo químico";
 const Reciclaveis = "Reciclaveis";
 
 export const totalRounds = 5
-export const questionsPerRound = 10;
+export const questionsPerRound = 2;
 
 // const GrupoA = "Grupo A - Resíduo Biológico - Infectante";
 // const GrupoB = "Grupo B - Resíduos químicos";
