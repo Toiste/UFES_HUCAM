@@ -79,14 +79,9 @@ function updateRoundProgress(showFullProgressQuestion = false, showFullProgressR
         progressRoundElement.style.width = `100%`;
         progressRoundElement.setAttribute("aria-valuenow", `100`);
         progressRoundElement.innerText = `100%`;
-
-        progressElementQuestion.style.width = `100%`;
-        progressElementQuestion.setAttribute("aria-valuenow", `100`);
-        progressElementQuestion.innerText = `100%`;
     }
     else{
         const currProgressRound = Math.round((100 / rounds.length) * (currentRound));
-
         progressRoundElement.style.width = `${currProgressRound}%`;
         progressRoundElement.setAttribute("aria-valuenow", `${currProgressRound}`);
         progressRoundElement.innerText = `${currProgressRound}%`;
