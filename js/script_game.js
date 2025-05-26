@@ -1,45 +1,11 @@
 import {generateRandomRounds, trashGroups} from "./data/trashData.js";
-
-let rounds = generateRandomRounds()
-
-const totalQuestions = rounds.flat().length;
-const answerOptions = [...trashGroups];
+/* ------------------------------------------------ VALORES CONSTANTES ------------------------------------------------ */
+const localStorageKeyName = "grrs_progress";
 const totalLivesPerRound = 5;
+const answerOptions = [...trashGroups];
+/* ------------------------------------------------ VALORES CONSTANTES ------------------------------------------------ */
 
-let currentRound = 0;
-let currentRoundLives = totalLivesPerRound;
-let currentQuestion = 0;
-let correctAnswers = 0;
-
-let startDateTime = new Date();
-
-function wasLastQuestionOfRound(){
-    const round = rounds[currentRound];
-    const roundQuestionsNum = round.length;
-    const lastQuestion = roundQuestionsNum - 1;
-    return currentQuestion === lastQuestion
-}
-
-function wasLastQuestionOfLastRound(){
-    const lastRound = rounds.length - 1;
-
-    return wasLastQuestionOfRound() && currentRound === lastRound;
-}
-
-function updateCurrentRoundAndQuestion() {
-    if (wasLastQuestionOfRound()) {
-        currentRound++;
-        currentQuestion = 0;
-        currentRoundLives = totalLivesPerRound;
-
-        return false;
-    }
-
-    //If its not the end of the round, goes to the next question
-    currentQuestion++;
-    return false;
-}
-
+/* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
 const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
 const stepContainer = document.getElementById("step-container");
@@ -54,59 +20,129 @@ const roundCompleteContainer = document.getElementById("round-complete-container
 const roundCompleteTitle = document.getElementById("round-complete-title");
 
 const progressElementQuestion = document.getElementById("progress-bar-step-question");
-const progressRoundElement = document.getElementById("progress-bar-step-round");
+// const progressRoundElement = document.getElementById("progress-bar-step-round");
 const progressContainer = document.getElementById("step-counter-container");
 
 const vidas = document.getElementById("vidas");
 const roundCounter = document.getElementById("round-counter");
 
 const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
+/* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
 
+/* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
+function createSave() {
+    let roundsGenerated = generateRandomRounds();
+    const baseObject = {
+        rounds:roundsGenerated,
+        totalQuestions: roundsGenerated.flat().length,
+        currentRoundLives: totalLivesPerRound,
+        currentRound: 0,
+        currentQuestion: 0,
+        correctAnswers: 0,
+        startDateTime: new Date(),
+
+    }
+    return {...baseObject};
+}
+
+/* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
+//Retorna o json do save ou null caso não exista
+const loadSave = () => JSON.parse(window.localStorage.getItem(localStorageKeyName)) ?? null;
+
+//Caso exista save, carrega ele, se não cria um novo save
+const loadOrGenerateSaveObject = () => ({...loadSave() ?? createSave()});
+
+//Salva o progresso atual
+const saveSave = () => {
+    const json = JSON.stringify(saveObject, function(key, value) {
+        if (typeof value === 'function') {
+            return value.toString();
+        } else {
+            return value;
+        }
+    });
+    window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObject}))
+};
+//Deleta o save para gerar um novo ao reiniciar
+const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
+
+const saveObject = loadOrGenerateSaveObject()
+/* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
+
+/*
+* Verifica se a a resposta dada era a última do round
+*/
+function isLastQuestionOfRound() {
+    const round = saveObject.rounds[saveObject.currentRound];
+    const roundQuestionsNum = round.length;
+    const lastQuestion = roundQuestionsNum - 1;
+    return saveObject.currentQuestion === lastQuestion
+}
+
+/*
+* Verifica se a a resposta dada era a última do ultimo round
+*/
+function isLastQuestionOfLastRound(){
+    const lastRound = saveObject.rounds.length - 1;
+    return isLastQuestionOfRound() && saveObject.currentRound === lastRound;
+}
+
+/*
+* Pula para a próxima pergunta. Caso seja a última pergunta do round, pula para o próximo round.
+*/
+function updateCurrentRoundAndQuestion() {
+    if (isLastQuestionOfRound()) {
+        saveObject.currentRound++;
+        saveObject.currentQuestion = 0;
+        saveObject.currentRoundLives = totalLivesPerRound;
+        return;
+    }
+    //If its not the end of the round, goes to the next question
+    saveObject.currentQuestion++;
+}
+
+/*
+* Diminui a vida caso tenha errado a resposta
+*/
+function removerVida() {
+    saveObject.currentRoundLives -= 1
+    //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
+    if (saveObject.currentRoundLives < 0) saveObject.currentRoundLives = 0
+}
+
+
+/*
+* Atualiza as barras de progresso a partir do elemento
+*/
+function updateProgressOfElement(element,list, current, showFull = false){
+    if(showFull){
+        element.style.width = `100%`;
+        element.setAttribute("aria-valuenow", `100`);
+        element.innerText = `100%`;
+        return
+    }
+    const currProgressQuestion = Math.round((100 / list.length) * (current));
+    element.style.width = `${currProgressQuestion}%`;
+    element.setAttribute("aria-valuenow", `${currProgressQuestion}`);
+    element.innerText = `${currProgressQuestion}%`;
+
+}
+
+/*
+* Atualiza as barras de progresso de pergunta e round
+*/
 function updateRoundProgress(showFullProgressQuestion = false, showFullProgressRound = false) {
-    if(showFullProgressQuestion){
-        progressElementQuestion.style.width = `100%`;
-        progressElementQuestion.setAttribute("aria-valuenow", `100`);
-        progressElementQuestion.innerText = `100%`;
-    }
-    else{
-        const currProgressQuestion = Math.round((100 / rounds[currentRound].length) * (currentQuestion));
-        progressElementQuestion.style.width = `${currProgressQuestion}%`;
-        progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
-        progressElementQuestion.innerText = `${currProgressQuestion}%`;
-    }
-
-    if(showFullProgressRound){
-        progressRoundElement.style.width = `100%`;
-        progressRoundElement.setAttribute("aria-valuenow", `100`);
-        progressRoundElement.innerText = `100%`;
-    }
-    else{
-        const currProgressRound = Math.round((100 / rounds.length) * (currentRound));
-        progressRoundElement.style.width = `${currProgressRound}%`;
-        progressRoundElement.setAttribute("aria-valuenow", `${currProgressRound}`);
-        progressRoundElement.innerText = `${currProgressRound}%`;
-    }
-
-
-
-
-
+    updateProgressOfElement(progressElementQuestion, saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
+    // updateProgressOfElement(progressRoundElement, saveObject.rounds, saveObject.currentRound, showFullProgressRound);
 }
 
 function updateRoundNumber() {
-    roundCounter.innerText = `Round ${currentRound + 1}`
+    roundCounter.innerText = `Round ${saveObject.currentRound + 1} de ${saveObject.rounds.length}`
 }
 
-function removerVida() {
-    currentRoundLives -= 1
-    //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
-    if (currentRoundLives < 0) currentRoundLives = 0
-    // atualizarVidas()
-
-}
 
 function atualizarVidas() {
-    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${currentRoundLives}</span>`
+    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${saveObject.currentRoundLives}</span>`
 }
 
 /*Carrega cada passo de pergunta
@@ -119,9 +155,8 @@ function atualizarVidas() {
 *   - Mostrar resultados
 * */
 function loadStep() {
-    console.log(`Current Question: ${currentQuestion+1}(${currentQuestion})/${rounds[currentRound].length}`)
-    console.log(`Current Round: ${currentRound+1}(${currentRound})/${rounds.length}`)
-    const currentTrash = rounds[currentRound][currentQuestion];
+    saveSave();
+    const currentTrash = saveObject.rounds[saveObject.currentRound][saveObject.currentQuestion];
 
     trashNameElement.textContent = `${currentTrash.name}`;
     optionsContainer.innerHTML = "";
@@ -154,17 +189,15 @@ document.getElementById("start-button").addEventListener("click", function () {
         document.getElementById("step-counter-container").style.display = "flex";
     }, 1000); // Tempo deve ser igual ao da animação (1s)
 });
-
+function reset(){
+    deleteSave()
+    window.location.reload()
+}
 document.getElementById("reset-button").addEventListener("click", function () {
-    startDateTime = new Date()
-    currentRound = 0;
-    currentQuestion = 0;
-    currentRoundLives = totalLivesPerRound;
-    rounds = generateRandomRounds()
-    atualizarVidas()
-    hideResults()
-    loadStep()
-    updateThings()
+    reset()
+});
+document.getElementById("reset-button-arrow").addEventListener("click", function () {
+    reset()
 });
 
 //OBS: Apenas para debug
@@ -189,17 +222,17 @@ function selectGroup(selectedGroup, correctGroup) {
     });
 
     if (selectedGroup === correctGroup) {
-        correctAnswers++;
+        saveObject.correctAnswers++;
     } else {
         removerVida()
     }
 
     setTimeout(()=>{
-        if(currentRoundLives === 0 || wasLastQuestionOfLastRound()){
+        if(saveObject.currentRoundLives === 0 || isLastQuestionOfLastRound()){
             return showResults();
         }
 
-        if(wasLastQuestionOfRound()){
+        if(isLastQuestionOfLastRound()){
             return showRoundComplete();
         }
 
@@ -219,7 +252,7 @@ function showRoundComplete(){
     stepContainer.style.display = "none";
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
-    roundCompleteTitle.innerText = `Round ${currentRound+1} completo!`
+    roundCompleteTitle.innerText = `Round ${saveObject.currentRound+1} completo!`
     roundCompleteContainer.style.display = "flex";
 
     setTimeout(()=>{
@@ -234,10 +267,10 @@ function showRoundComplete(){
 }
 
 function showResults() {
-    const isEnd = wasLastQuestionOfLastRound()
+    const isEnd = isLastQuestionOfLastRound()
     updateThings(isEnd, isEnd)
 
-    const timespan = getTimeDifference(startDateTime, new Date());
+    const timespan = getTimeDifference(saveObject.startDateTime, new Date());
 
     const temHoras = timespan.hours > 0;
     const temMinutos = timespan.minutes > 0;
@@ -266,19 +299,19 @@ function showResults() {
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
 
-    if (correctAnswers === totalQuestions) {
+    if (saveObject.correctAnswers === saveObject.totalQuestions) {
         resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
+        resultScoreElement.textContent = `Você acertou todas as ${saveObject.totalQuestions} questões!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
-    } else if (correctAnswers === 0) {
+    } else if (saveObject.correctAnswers === 0) {
         resultTitle.textContent = "Não foi dessa vez!";
         resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
     } else {
         resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
+        resultScoreElement.textContent = `Você acertou ${saveObject.correctAnswers} de ${saveObject.totalQuestions} questões!`;
         resultImg.src = gifTrofeu.src;
         resultImg.alt = gifTrofeu.alt;
     }
@@ -290,7 +323,7 @@ function nextStep() {
     loadStep();
 }
 
-export function getTimeDifference(startDate, endDate) {
+function getTimeDifference(startDate, endDate) {
     // Calculate difference in milliseconds
     const diffInMs = Math.abs(endDate - startDate);
 
