@@ -135,25 +135,26 @@ function updateRoundProgress(showFullProgressQuestion = false, showFullProgressR
     updateProgressOfElement(progressElementQuestion, saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
     // updateProgressOfElement(progressRoundElement, saveObject.rounds, saveObject.currentRound, showFullProgressRound);
 }
-
+/*
+* Atualiza a visualização do round atual
+*/
 function updateRoundNumber() {
     roundCounter.innerText = `Round ${saveObject.currentRound + 1} de ${saveObject.rounds.length}`
 }
 
-
+/*
+* Atualiza a visualização das vidas
+*/
 function atualizarVidas() {
     vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${saveObject.currentRoundLives}</span>`
 }
 
-/*Carrega cada passo de pergunta
-* Isso envolve:
-* - Atualiza a barra de progresso
-* - Caso ainda tenham perguntas:
-*   - Pegar uma aleatória da lista
-*   - Criar os cards de respostas
-* - Caso as perguntas tenham terminado:
-*   - Mostrar resultados
-* */
+/*
+* Carrega cada passo de pergunta:
+* - Salva o progresso até o momento
+* - Pega a próxima pergunta
+* - Monta as opões e os eventos de resposta
+*/
 function loadStep() {
     saveSave();
     const currentTrash = saveObject.rounds[saveObject.currentRound][saveObject.currentQuestion];
@@ -177,6 +178,7 @@ function loadStep() {
 }
 
 // Tela de transição com animação
+
 document.getElementById("start-button").addEventListener("click", function () {
     const startScreen = document.getElementById("start-screen");
 
@@ -208,6 +210,9 @@ if (window.location.hostname === "localhost") {
 
 
 ///
+/*
+* Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
+*/
 function selectGroup(selectedGroup, correctGroup) {
     const cards = optionsContainer.querySelectorAll(".option-card");
     cards.forEach(card => {
@@ -228,14 +233,15 @@ function selectGroup(selectedGroup, correctGroup) {
     }
 
     setTimeout(()=>{
+        //Se ficou sem vida após responder ou se respondeu a última pergunta do último round, mostra os resultados
         if(saveObject.currentRoundLives === 0 || isLastQuestionOfLastRound()){
             return showResults();
         }
-
-        if(isLastQuestionOfLastRound()){
+        //Se respondeu a última pergunta do round atual, mostra uma animação de round completo para depois mandar para o próximo round
+        if(isLastQuestionOfRound()){
             return showRoundComplete();
         }
-
+        //Vai para a próxima pergunta
         return nextStep()
     },500)
 }

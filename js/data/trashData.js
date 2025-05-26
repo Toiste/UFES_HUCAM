@@ -5,8 +5,8 @@ const GrupoE = "Resíduos perfurocortantes";
 const GrupoBE = "Perfurocortante para resíduo químico";
 const Reciclaveis = "Reciclaveis";
 
-export const totalRounds = 5
-export const questionsPerRound = 2;
+export const totalRounds = window.location.hostname === "localhost" ? 5 : 10;
+export const questionsPerRound = window.location.hostname === "localhost" ? 2 : 5;
 
 // const GrupoA = "Grupo A - Resíduo Biológico - Infectante";
 // const GrupoB = "Grupo B - Resíduos químicos";
