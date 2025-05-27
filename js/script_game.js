@@ -29,7 +29,7 @@ const roundCounter = document.getElementById("round-counter");
 const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
 /* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
 
-/* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
+/* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 function createSave() {
     let roundsGenerated = generateRandomRounds();
     const baseObject = {
@@ -52,29 +52,22 @@ function createSave() {
     return {...baseObject};
 }
 
-/* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
+
 //Retorna o json do save ou null caso não exista
-const loadSave = () => JSON.parse(window.localStorage.getItem(localStorageKeyName)) ?? null;
+const loadSave = () => ({...JSON.parse(window.localStorage.getItem(localStorageKeyName))}) ?? null;
 
 //Caso exista save, carrega ele, se não cria um novo save
-const loadOrGenerateSaveObject = () => ({...loadSave() ?? createSave()});
+const loadOrGenerateSaveObject = () => loadSave() ?? createSave();
 
 //Salva o progresso atual
 const saveSave = () => {
-    const json = JSON.stringify(saveObject, function(key, value) {
-        if (typeof value === 'function') {
-            return value.toString();
-        } else {
-            return value;
-        }
-    });
     window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObject}))
 };
 //Deleta o save para gerar um novo ao reiniciar
 const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
 
 const saveObject = loadOrGenerateSaveObject()
-console.log(saveObject)
+
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 
 /*
@@ -139,7 +132,7 @@ function updateProgressOfElement(element,list, current, showFull = false){
 /*
 * Atualiza as barras de progresso de pergunta e round
 */
-function updateRoundProgress(showFullProgressQuestion = false, showFullProgressRound = false) {
+function updateRoundProgress(showFullProgressQuestion = false) {
     updateProgressOfElement(progressElementQuestion, saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
     // updateProgressOfElement(progressRoundElement, saveObject.rounds, saveObject.currentRound, showFullProgressRound);
 }
@@ -193,7 +186,8 @@ document.getElementById("start-button").addEventListener("click", function () {
     const startScreen = document.getElementById("start-screen");
 
     startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
-    if(isLastQuestionOfLastRound()  || saveObject.currentRoundLives === 0) return;
+    //Se o save foi carregado finalizado, não mostrar ao carregar
+    if(isFinalizedOrNoLivesRemaining()) return;
     setTimeout(() => {
         startScreen.style.display = "none"; // Remove a tela depois da animação
         document.getElementById("step-container").style.display = "block";
@@ -225,9 +219,6 @@ if (window.location.hostname === "localhost") {
 */
 function selectGroup(selectedGroup, correctGroup) {
     saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][1] = new Date();
-    console.log(saveObject.timePerQuestion)
-    // console.log(`Round: ${[saveObject.currentRound]}, Pergunta: ${[saveObject.currentQuestion]}, Inicio: ${saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][0]}`)
-    // console.log(`Round: ${[saveObject.currentRound]}, Pergunta: ${[saveObject.currentQuestion]}, Fim: ${saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][1]}`)
     const cards = optionsContainer.querySelectorAll(".option-card");
     cards.forEach(card => {
         card.style.pointerEvents = "none"; // Bloqueia cliques adicionais
@@ -248,7 +239,7 @@ function selectGroup(selectedGroup, correctGroup) {
 
     setTimeout(()=>{
         //Se ficou sem vida após responder ou se respondeu a última pergunta do último round, mostra os resultados
-        if(saveObject.currentRoundLives === 0 || isLastQuestionOfLastRound()){
+        if(isFinalizedOrNoLivesRemaining()){
             return showResults();
         }
         //Se respondeu a última pergunta do round atual, mostra uma animação de round completo para depois mandar para o próximo round
@@ -260,15 +251,8 @@ function selectGroup(selectedGroup, correctGroup) {
     },500)
 }
 
-function hideResults() {
-    stepContainer.style.removeProperty("display");
-    progressContainer.style.removeProperty("display");
-    optionsContainer.style.removeProperty("display");
-    resultContainer.style.display = "none";
-}
-
 function showRoundComplete(){
-    updateThings(true)
+    updateVisuals(true)
     stepContainer.style.display = "none";
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
@@ -305,15 +289,7 @@ function getTotalMs(){
 
 function showResults() {
     saveSave()
-    // if(saveObject.currentRoundLives === 0) deleteSave()
-    // else {
-    //     saveObject.currentRound = saveObject.rounds.length-1
-    //     saveObject.currentQuestion = saveObject.rounds[saveObject.currentRound].length-1
-    //     saveSave()
-    // }
-    const isEnd = isLastQuestionOfLastRound()
-    updateThings(isEnd, isEnd)
-
+    updateVisuals(isLastQuestionOfLastRound())
 
     const timespan = getTimeDifference(getTotalMs());
 
@@ -364,7 +340,7 @@ function showResults() {
 
 function nextStep() {
     updateCurrentRoundAndQuestion()
-    updateThings()
+    updateVisuals()
     loadStep();
 }
 
@@ -391,17 +367,18 @@ function getTimeDifference(diffInMs) {
     };
 }
 
-function updateThings(showFullProgressQuestion = false, showFullProgressRound = false){
-    updateRoundProgress(showFullProgressQuestion, showFullProgressRound);
+function updateVisuals(showFullProgressQuestion = false){
+    updateRoundProgress(showFullProgressQuestion);
     updateRoundNumber();
     atualizarVidas();
 }
-//Se carregou o save finalizado
-// if(isLastQuestionOfLastRound())
-// Inicializa o primeiro passo
-updateThings()
-// loadStep();
-if(isLastQuestionOfLastRound() || saveObject.currentRoundLives === 0)
+function isFinalizedOrNoLivesRemaining(){
+    return isLastQuestionOfLastRound() || saveObject.currentRoundLives === 0
+}
+
+updateVisuals()
+//Se carregou o save finalizado ou sem vida, mostra direto a parte de resultados
+if(isFinalizedOrNoLivesRemaining())
     showResults()
 else
     loadStep()

@@ -2,16 +2,10 @@ const GrupoA = "Resíduo Biológico Infectante";
 const GrupoB = "Resíduos químicos";
 const GrupoD = "Resíduos Comuns";
 const GrupoE = "Resíduos perfurocortantes";
-const GrupoBE = "Perfurocortante para resíduo químico";
 const Reciclaveis = "Reciclaveis";
 
 export const totalRounds = window.location.hostname === "localhost" ? 5 : 10;
 export const questionsPerRound = window.location.hostname === "localhost" ? 2 : 5;
-
-// const GrupoA = "Grupo A - Resíduo Biológico - Infectante";
-// const GrupoB = "Grupo B - Resíduos químicos";
-// const GrupoD = "Grupo D - Resíduos Comuns";
-// const GrupoE = "Grupo E - Resíduos perfurocortantes";
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},
