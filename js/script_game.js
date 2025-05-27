@@ -40,8 +40,15 @@ function createSave() {
         currentQuestion: 0,
         correctAnswers: 0,
         startDateTime: new Date(),
-
+        timePerQuestion:[]
     }
+    let lst = [];
+    roundsGenerated.forEach(r=> {
+        let lstR = [];
+        for(let i = 0; i<r.length; i++) lstR.push([]);
+        lst.push(lstR);
+    })
+    baseObject.timePerQuestion = lst;
     return {...baseObject};
 }
 
@@ -67,6 +74,7 @@ const saveSave = () => {
 const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
 
 const saveObject = loadOrGenerateSaveObject()
+console.log(saveObject)
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 
 /*
@@ -105,7 +113,7 @@ function updateCurrentRoundAndQuestion() {
 * Diminui a vida caso tenha errado a resposta
 */
 function removerVida() {
-    saveObject.currentRoundLives -= 1
+    saveObject.currentRoundLives -= 1;
     //Sei la, vai que conseguem burlar a contagem e diminiuir mais vidas
     if (saveObject.currentRoundLives < 0) saveObject.currentRoundLives = 0
 }
@@ -175,6 +183,8 @@ function loadStep() {
         optionsContainer.appendChild(card);
     });
 
+    saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][0] = new Date();
+
 }
 
 // Tela de transição com animação
@@ -183,7 +193,7 @@ document.getElementById("start-button").addEventListener("click", function () {
     const startScreen = document.getElementById("start-screen");
 
     startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
-
+    if(isLastQuestionOfLastRound()  || saveObject.currentRoundLives === 0) return;
     setTimeout(() => {
         startScreen.style.display = "none"; // Remove a tela depois da animação
         document.getElementById("step-container").style.display = "block";
@@ -214,6 +224,10 @@ if (window.location.hostname === "localhost") {
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
 function selectGroup(selectedGroup, correctGroup) {
+    saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][1] = new Date();
+    console.log(saveObject.timePerQuestion)
+    // console.log(`Round: ${[saveObject.currentRound]}, Pergunta: ${[saveObject.currentQuestion]}, Inicio: ${saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][0]}`)
+    // console.log(`Round: ${[saveObject.currentRound]}, Pergunta: ${[saveObject.currentQuestion]}, Fim: ${saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][1]}`)
     const cards = optionsContainer.querySelectorAll(".option-card");
     cards.forEach(card => {
         card.style.pointerEvents = "none"; // Bloqueia cliques adicionais
@@ -272,11 +286,36 @@ function showRoundComplete(){
     }, 3000)
 }
 
+function getTotalMs(){
+    let diffInMs = 0;
+
+    for (let r=0; r<saveObject.timePerQuestion.length; r++){
+        const round  = saveObject.timePerQuestion[r];
+        for (let q=0; q<round.length; q++){
+            const question  = round[q];
+            if(question.length === 0) continue;
+            if(question.length === 2){
+                diffInMs+= Math.abs(new Date(question[1])-new Date(question[0]));
+            }
+        }
+    }
+
+    return diffInMs;
+}
+
 function showResults() {
+    saveSave()
+    // if(saveObject.currentRoundLives === 0) deleteSave()
+    // else {
+    //     saveObject.currentRound = saveObject.rounds.length-1
+    //     saveObject.currentQuestion = saveObject.rounds[saveObject.currentRound].length-1
+    //     saveSave()
+    // }
     const isEnd = isLastQuestionOfLastRound()
     updateThings(isEnd, isEnd)
 
-    const timespan = getTimeDifference(saveObject.startDateTime, new Date());
+
+    const timespan = getTimeDifference(getTotalMs());
 
     const temHoras = timespan.hours > 0;
     const temMinutos = timespan.minutes > 0;
@@ -329,9 +368,9 @@ function nextStep() {
     loadStep();
 }
 
-function getTimeDifference(startDate, endDate) {
+function getTimeDifference(diffInMs) {
     // Calculate difference in milliseconds
-    const diffInMs = Math.abs(endDate - startDate);
+    // const diffInMs = Math.abs(endDate - startDate);
 
     // Convert to different units
     const seconds = Math.floor(diffInMs / 1000);
@@ -357,6 +396,12 @@ function updateThings(showFullProgressQuestion = false, showFullProgressRound = 
     updateRoundNumber();
     atualizarVidas();
 }
+//Se carregou o save finalizado
+// if(isLastQuestionOfLastRound())
 // Inicializa o primeiro passo
 updateThings()
-loadStep();
+// loadStep();
+if(isLastQuestionOfLastRound() || saveObject.currentRoundLives === 0)
+    showResults()
+else
+    loadStep()
