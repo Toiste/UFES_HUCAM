@@ -184,3 +184,10 @@ footer a:hover {
     }
     
 }
+
+.h1-middle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
