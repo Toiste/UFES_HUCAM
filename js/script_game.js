@@ -31,30 +31,56 @@ const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mã
 
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 function createSave() {
-    let roundsGenerated = generateRandomRounds();
-    const baseObject = {
-        rounds:roundsGenerated,
-        totalQuestions: roundsGenerated.flat().length,
-        currentRoundLives: totalLivesPerRound,
-        currentRound: 0,
-        currentQuestion: 0,
-        correctAnswers: 0,
-        startDateTime: new Date(),
-        timePerQuestion:[]
+    try{
+        let roundsGenerated = generateRandomRounds();
+        const baseObject = {
+            rounds:roundsGenerated,
+            totalQuestions: roundsGenerated.flat().length,
+            currentRoundLives: totalLivesPerRound,
+            currentRound: 0,
+            currentQuestion: 0,
+            correctAnswers: 0,
+            startDateTime: new Date(),
+            timePerQuestion:[]
+        }
+        let lst = [];
+        roundsGenerated.forEach(r=> {
+            let lstR = [];
+            for(let i = 0; i<r.length; i++) lstR.push([]);
+            lst.push(lstR);
+        })
+        baseObject.timePerQuestion = lst;
+        const newObj ={...baseObject};
+        console.log("created", newObj)
+        return {...baseObject};
+    }catch (e) {
+        console.log("error creating", e)
+        return null;
     }
-    let lst = [];
-    roundsGenerated.forEach(r=> {
-        let lstR = [];
-        for(let i = 0; i<r.length; i++) lstR.push([]);
-        lst.push(lstR);
-    })
-    baseObject.timePerQuestion = lst;
-    return {...baseObject};
 }
 
 
 //Retorna o json do save ou null caso não exista
-const loadSave = () => ({...JSON.parse(window.localStorage.getItem(localStorageKeyName))}) ?? null;
+const loadSave = () => {
+
+    const item = window.localStorage.getItem(localStorageKeyName);
+    if(item === null){
+        console.log("not found, creating");
+        return null;
+    }
+
+    try {
+        const json = JSON.parse(item);
+        console.log("found, parsed");
+        return json;
+    }
+    catch(e){
+        console.log("found, parsed");
+        console.log(e);
+    }
+
+
+}
 
 //Caso exista save, carrega ele, se não cria um novo save
 const loadOrGenerateSaveObject = () => loadSave() ?? createSave();
@@ -66,8 +92,8 @@ const saveSave = () => {
 //Deleta o save para gerar um novo ao reiniciar
 const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
 
-const saveObject = loadOrGenerateSaveObject()
-
+let saveObject = loadOrGenerateSaveObject()
+console.log("saveObject first",saveObject)
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 
 /*
@@ -374,6 +400,12 @@ function updateVisuals(showFullProgressQuestion = false){
 }
 function isFinalizedOrNoLivesRemaining(){
     return isLastQuestionOfLastRound() || saveObject.currentRoundLives === 0
+}
+
+while (Object.keys(saveObject).length === 0){
+    console.log("saveObject entrou while",saveObject)
+    saveObject = loadOrGenerateSaveObject()
+    console.log("saveObject saindo while",saveObject)
 }
 
 updateVisuals()
