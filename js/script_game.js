@@ -50,8 +50,6 @@ function createSave() {
             lst.push(lstR);
         })
         baseObject.timePerQuestion = lst;
-        const newObj ={...baseObject};
-        console.log("created", newObj)
         return {...baseObject};
     }catch (e) {
         console.log("error creating", e)
@@ -65,17 +63,14 @@ const loadSave = () => {
 
     const item = window.localStorage.getItem(localStorageKeyName);
     if(item === null){
-        console.log("not found, creating");
         return null;
     }
 
     try {
-        const json = JSON.parse(item);
-        console.log("found, parsed");
-        return json;
+        return JSON.parse(item);
     }
     catch(e){
-        console.log("found, parsed");
+        console.log("error parsing");
         console.log(e);
     }
 
@@ -93,7 +88,7 @@ const saveSave = () => {
 const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
 
 let saveObject = loadOrGenerateSaveObject()
-console.log("saveObject first",saveObject)
+
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 
 /*
@@ -403,9 +398,7 @@ function isFinalizedOrNoLivesRemaining(){
 }
 
 while (Object.keys(saveObject).length === 0){
-    console.log("saveObject entrou while",saveObject)
     saveObject = loadOrGenerateSaveObject()
-    console.log("saveObject saindo while",saveObject)
 }
 
 updateVisuals()
