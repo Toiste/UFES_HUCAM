@@ -4,8 +4,8 @@ const GrupoD = "Resíduos Comuns";
 const GrupoE = "Resíduos perfurocortantes";
 const Reciclaveis = "Reciclaveis";
 
-export const totalRounds = window.location.hostname === "localhost" ? 5 : 10;
-export const questionsPerRound = window.location.hostname === "localhost" ? 2 : 5;
+export const totalRounds =  10;
+export const questionsPerRound =  5;
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},
