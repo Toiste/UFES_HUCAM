@@ -98,16 +98,12 @@ footer a:hover {
     z-index: 0;
 }
 
-#step-container{
-    display: flex;
-}
-
 .header-faixa {
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 40px;
+    height: 30px;
     width: 100%;
     border: rgba(0, 0, 0, 0.404) 1px solid;
     padding: 0 10px;
