@@ -161,14 +161,14 @@ function updateRoundProgress(showFullProgressQuestion = false) {
 * Atualiza a visualização do round atual
 */
 function updateRoundNumber() {
-    roundCounter.innerText = `Round ${saveObject.currentRound + 1} de ${saveObject.rounds.length}`
+    roundCounter.innerText = `${saveObject.currentRound + 1} de ${saveObject.rounds.length}`
 }
 
 /*
 * Atualiza a visualização das vidas
 */
 function atualizarVidas() {
-    vidas.innerHTML = `<span  style="font-size: 30px;transform: scale(.5,1)">&#129505;&nbsp;x${saveObject.currentRoundLives}</span>`
+    vidas.innerHTML = `<span  style="font-size: 25px;transform: scale(.5,1)">&#129505;&nbsp;x${saveObject.currentRoundLives}</span>`
 }
 
 /*
@@ -272,23 +272,29 @@ function selectGroup(selectedGroup, correctGroup) {
     },500)
 }
 
-function showRoundComplete(){
-    updateVisuals(true)
+function showRoundComplete() {
+    updateVisuals(true);
+
     stepContainer.style.display = "none";
     progressContainer.style.display = "none";
-    optionsContainer.style.display = "none"
-    roundCompleteTitle.innerText = `Round ${saveObject.currentRound+1} completo!`
-    roundCompleteContainer.style.display = "flex";
+    optionsContainer.style.display = "none";
 
-    setTimeout(()=>{
-        stepContainer.style.removeProperty("display");
-        progressContainer.style.removeProperty("display");
-        optionsContainer.style.removeProperty("display");
+    // Aguarda um ciclo de renderização antes de mostrar a mensagem
+    setTimeout(() => {
+        roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
+        roundCompleteContainer.style.display = "flex";
 
-        roundCompleteTitle.innerText = ""
-        roundCompleteContainer.style.display = "none";
-        nextStep()
-    }, 3000)
+        // Depois de 3 segundos, esconde novamente e continua
+        setTimeout(() => {
+            stepContainer.style.removeProperty("display");
+            progressContainer.style.removeProperty("display");
+            optionsContainer.style.removeProperty("display");
+
+            roundCompleteTitle.innerText = "";
+            roundCompleteContainer.style.display = "none";
+            nextStep();
+        }, 3000);
+    }, 0); // ou 50ms se quiser garantir visualmente
 }
 
 function getTotalMs(){
