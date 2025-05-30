@@ -1,7 +1,7 @@
 import {generateRandomRounds, trashGroups} from "./data/trashData.js";
 /* ------------------------------------------------ VALORES CONSTANTES ------------------------------------------------ */
 const localStorageKeyName = "grrs_progress";
-const totalLivesPerRound = 5;
+const totalLivesPerRound = 3;
 const answerOptions = [...trashGroups];
 /* ------------------------------------------------ VALORES CONSTANTES ------------------------------------------------ */
 
