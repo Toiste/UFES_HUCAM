@@ -20,15 +20,58 @@ const roundCompleteContainer = document.getElementById("round-complete-container
 const roundCompleteTitle = document.getElementById("round-complete-title");
 
 const progressElementQuestion = document.getElementById("progress-bar-step-question");
-// const progressRoundElement = document.getElementById("progress-bar-step-round");
-const progressContainer = document.getElementById("step-counter-container");
 
 const vidas = document.getElementById("vidas");
 const roundCounter = document.getElementById("round-counter");
 
 const gifTrofeu = {src: "assets/images/icones/sucesso.gif", alt: "gif de uma mão segurando um troféu"}
+
+const questionTryAgainBtn = document.getElementById("btn-try-again");
+const questionTryAgainContainer = document.getElementById("container-btn-try-again");
+
+
+const resetSaveBtn = document.getElementById("reset-button");
+const resetSaveBtnArrow = document.getElementById("reset-button-arrow");
 /* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
 
+/* ------------------------------------------------ GERENCIAMENTE DE UI ------------------------------------------------ */
+function setCurrentTrashName(name){
+    trashNameElement.textContent = `${name}`;
+}
+
+function createCard(group, currentTrash){
+    const card = document.createElement("div");
+    card.classList.add("option-card");
+    card.innerHTML = `
+            <img src="assets/images/${group.image}" alt="${group.name}">
+            <p>${group.name}</p>
+        `;
+    card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
+    return card;
+}
+
+function toggleElDisplayBlock(el, display){
+    if(display)
+        el.style.display = "block";
+    else
+        el.style.display = "none";
+}
+function toggleElDisplayFlex(el, display){
+    if(display)
+        el.style.display = "flex";
+    else
+        el.style.removeProperty("display");
+}
+
+
+function toggleQuestionTryAgainContainer(show){
+    if(show)
+        questionTryAgainContainer.style.display = "flex";
+    else
+        questionTryAgainContainer.style.display = "none";
+}
+
+/* ------------------------------------------------ GERENCIAMENTE DE UI ------------------------------------------------ */
 /* ------------------------------------------------ GERENCIAMENTE DE SAVE ------------------------------------------------ */
 function createSave() {
     try{
@@ -180,20 +223,13 @@ function atualizarVidas() {
 function loadStep() {
     saveSave();
     const currentTrash = saveObject.rounds[saveObject.currentRound][saveObject.currentQuestion];
-
-    trashNameElement.textContent = `${currentTrash.name}`;
+    setCurrentTrashName(currentTrash.name)
     optionsContainer.innerHTML = "";
 
     answerOptions.forEach(group => {
         if (currentTrash.hideGroups.length > 0 && currentTrash.hideGroups.includes(group.name))
             return
-        const card = document.createElement("div");
-        card.classList.add("option-card");
-        card.innerHTML = `
-            <img src="assets/images/${group.image}" alt="${group.name}">
-            <p>${group.name}</p>
-        `;
-        card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
+        const card = createCard(group, currentTrash)
         optionsContainer.appendChild(card);
     });
 
@@ -211,19 +247,19 @@ document.getElementById("start-button").addEventListener("click", function () {
     if(isFinalizedOrNoLivesRemaining()) return;
     setTimeout(() => {
         startScreen.style.display = "none"; // Remove a tela depois da animação
-        document.getElementById("step-container").style.display = "block";
-        document.getElementById("options-container").style.display = "flex";
-        document.getElementById("step-counter-container").style.display = "flex";
+        // stepContainer.style.display = "block";
+        toggleElDisplayBlock(stepContainer, true)
+        optionsContainer.style.display = "flex";
     }, 1000); // Tempo deve ser igual ao da animação (1s)
 });
 function reset(){
     deleteSave()
     window.location.reload()
 }
-document.getElementById("reset-button").addEventListener("click", function () {
+resetSaveBtn.addEventListener("click", function () {
     reset()
 });
-document.getElementById("reset-button-arrow").addEventListener("click", function () {
+resetSaveBtnArrow.addEventListener("click", function () {
     reset()
 });
 
@@ -275,8 +311,8 @@ function selectGroup(selectedGroup, correctGroup) {
 function showRoundComplete() {
     updateVisuals(true);
 
-    stepContainer.style.display = "none";
-    progressContainer.style.display = "none";
+    // stepContainer.style.display = "none";
+    toggleElDisplayBlock(stepContainer, false)
     optionsContainer.style.display = "none";
 
     // Aguarda um ciclo de renderização antes de mostrar a mensagem
@@ -286,8 +322,8 @@ function showRoundComplete() {
 
         // Depois de 3 segundos, esconde novamente e continua
         setTimeout(() => {
-            stepContainer.style.removeProperty("display");
-            progressContainer.style.removeProperty("display");
+            // stepContainer.style.removeProperty("display");
+            toggleElDisplayBlock(stepContainer, true)
             optionsContainer.style.removeProperty("display");
 
             roundCompleteTitle.innerText = "";
@@ -342,8 +378,8 @@ function showResults() {
     }
     resultTimeTitle.innerText = txt;
 
-    stepContainer.style.display = "none";
-    progressContainer.style.display = "none";
+    // stepContainer.style.display = "none";
+    toggleElDisplayBlock(stepContainer, false)
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
 

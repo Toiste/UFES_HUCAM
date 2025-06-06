@@ -5,7 +5,7 @@ const GrupoE = "Resíduos perfurocortantes";
 const Reciclaveis = "Reciclaveis";
 
 export const totalRounds =  10;
-export const questionsPerRound =  5;
+export const questionsPerRound =  2;
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},
