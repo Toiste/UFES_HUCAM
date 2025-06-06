@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx webpack -w --mode development",
+    "dev": "npx webpack --mode development",
+    "watch": "npx webpack -w --mode development",
     "build": "npx webpack --mode production"
 
   },

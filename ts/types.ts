@@ -13,7 +13,7 @@ export interface Save {
     currentRound: number,
     currentQuestion: number,
     correctAnswers: number,
-    timePerQuestion: Map<string, Tuple<number>>
+    timePerQuestion: { [key:string]:Tuple<number> }
 }
 
 export interface Dictionary<T> {

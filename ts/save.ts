@@ -1,5 +1,5 @@
 import {generateRandomRounds, localStorageKeyName, totalLivesPerRound} from "./data";
-import {Save, TimesPerQuestionDictV2, Tuple} from "./types";
+import {Save, Tuple} from "./types";
 
 function createSave(): Save|null {
     try {
@@ -11,7 +11,7 @@ function createSave(): Save|null {
             currentRound: 0,
             currentQuestion: 0,
             correctAnswers: 0,
-            timePerQuestion: new Map<string, Tuple<number>>()
+            timePerQuestion: {}
         } as Save;
         return {...baseObject} as Save;
     } catch (e) {

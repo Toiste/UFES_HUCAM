@@ -119,18 +119,17 @@ function atualizarVidas() {
 function setTimePerQuestion(
     type:ETypeTimePerQuestion,
 ){
-    if(!saveObject.timePerQuestion) new Map<string, Tuple<number>>;
+    debugger;
+    // if(!saveObject.timePerQuestion) saveObject.timePerQuestion = {};
     const key = `${saveObject.currentRound}-${saveObject.currentQuestion}`;
     const getUTCMillisecondsNow = ()=> new Date().getUTCMilliseconds();
     if(type === ETypeTimePerQuestion.END){
-        const curr = saveObject.timePerQuestion.get(key)!;
-        saveObject.timePerQuestion.set(key, [curr[0], getUTCMillisecondsNow()]);
+        saveObject.timePerQuestion[key][1] = getUTCMillisecondsNow();
+        // saveObject.timePerQuestion.set(key, [curr[0], ]);
         return;
     }
+    saveObject.timePerQuestion[key] = [getUTCMillisecondsNow(), 0];
 
-    if(!saveObject.timePerQuestion.has(key)){
-        saveObject.timePerQuestion.set(key, [getUTCMillisecondsNow(), 0]);
-    }
 }
 
 /*

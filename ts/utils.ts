@@ -1,13 +1,11 @@
-import {Save, TimesPerQuestionDict, TimesPerQuestionDictV2, Tuple} from "./types";
-import {totalLivesPerRound} from "./data";
-import {progressElementQuestion} from "./elements";
+import {Tuple} from "./types";
 
-export function getTotalMsTimeAllQuestions(dict: Map<string, Tuple<number>>) {
+export function getTotalMsTimeAllQuestions(dict: { [key:string]:Tuple<number> }) {
     let totalMsAllQuestion = 0;
     const keysRounds: string[] = Object.keys(dict);
 
     keysRounds.forEach((kr: string) => {
-        const timeTuple =  dict.get(kr)!;
+        const timeTuple = dict[kr]!;
         const questionTimeEnd = timeTuple[1];
         const questionTimeBegin = timeTuple[0];
         totalMsAllQuestion += questionTimeEnd - questionTimeBegin;
@@ -16,7 +14,7 @@ export function getTotalMsTimeAllQuestions(dict: Map<string, Tuple<number>>) {
     return totalMsAllQuestion;
 }
 
-export function getTimeDifference(diffInMs:number) {
+export function getTimeDifference(diffInMs: number) {
     // Calculate difference in milliseconds
     // const diffInMs = Math.abs(endDate - startDate);
 
