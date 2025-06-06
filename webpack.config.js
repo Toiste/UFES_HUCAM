@@ -3,8 +3,6 @@ const fs = require('fs');
 
 const tsFiles = fs.readdirSync(path.join(__dirname, 'ts',)).map(x=> path.join(__dirname, 'ts',x))
 
-console.log(tsFiles)
-
 module.exports = {
     entry: tsFiles,
     output: {
