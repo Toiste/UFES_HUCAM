@@ -1,0 +1,124 @@
+<div id="game-rules-modal" class="modal-overlay" [class.show]="show">
+    <div class="modal-content">
+        <div style="padding-bottom: 30px;">
+            <h2 class="text-center" style="font-size: 18px; font-weight: 700;">Como Jogar</h2>
+            <p class="text-center" style="font-size: 14px;">Aprenda a classificar corretamente os resíduos
+                hospitalares.</p>
+        </div>
+
+        <div class="d-flex flex-column justify-content-start">
+            <h3 class="pb-2" style="font-size: 16px;">Regras do Jogo:</h3>
+            <ul style="padding: 0 0 0 20px; font-size: 14px; color: #646464;">
+                <li>Observe o item hospitalar apresentado.</li>
+                <li>Selecione a lixeira correta para o descarte.</li>
+                <li>Ganhe pontos por cada resposta correta.</li>
+                <li>Aprenda sobre os diferentes tipos de resíduos hospitalares.</li>
+            </ul>
+
+        </div>
+
+
+        <h3 class="pb-4">Tipos de Resíduos:</h3>
+        <ul class="d-flex flex-column"
+            style="list-style: none; padding: 0 0 0 0; font-size: 14px; flex-wrap: wrap; height: 80px; gap: 5px;">
+            <li>🟡 Biológico</li>
+            <li>🟠 Químicos</li>
+            <li>⚪ Comuns</li>
+            <li>🔴 Perfurocortantes</li>
+            <li>🔵 Recicláveis</li>
+        </ul>
+
+        <button id="close-modal" class="btn btn-danger" (click)="toggleModal(false)">Fechar</button>
+    </div>
+</div>
+
+<body>
+<!-- Header -->
+<header class=" d-flex justify-content-center align-items-center">
+
+    <div class="d-flex align-items-center" style="height: 40px;">
+        <!-- <img src="assets/images/icones/hospital.png" alt="Icone de um Hospital" style="height: 28px;"> -->
+        <h1 onclick="window.location.href='index.html'" class="title-header text-center">GRSS - Gerenciamento de Resíduo
+            de Serviços de Saúde</h1>
+    </div>
+    <!-- <menu>
+        <img src="assets/images/icones/menu_white.png" alt="barra de acesso ao menu" style="height: 40px;">
+    </menu> -->
+</header>
+
+
+<!-- Start the Game -->
+<section class="container-game-page d-flex justify-content-center align-items-center">
+    <div class="d-flex align-items-center flex-column" style="width: 90%;  gap: 20px;">
+        <div class="container-game-icone">
+            <img src="assets/images/icones/trash.png" alt="ícone de lixeira" style="height: 60%;">
+        </div>
+
+        <h1 class="game-title">Descarte Correto</h1>
+        <p class="game-subtitle">Resíduos Hospitalares</p>
+        <p class="text-center game-text" style="padding-bottom: 10px;">Aprenda a descartar corretamente os resíduos
+            hospitalares e contribua para um ambiente mais seguro</p>
+        <div class="container-game-buttons">
+            <button type="button" class="btn" style="width: 48%; height: 50px; background-color: #58CC02; color: #ffff;"
+                    onclick="window.location.href='game.html'">
+                Iniciar Jogo
+            </button>
+            <button (click)="toggleModal(true)" type="button" class="btn btn-outline-secondary" style="width: 48%; height: 50px;" id="open-modal">
+                Como Jogar
+            </button>
+        </div>
+        <div class="container-game-buttons">
+            <button type="button" class="btn" style="width: 48%; height: 60px; background-color: #009CDB; color: #ffff;"
+                    onclick="window.location.href='oprojeto.html'">
+                Sobre o projeto
+            </button>
+            <button type="button" class="btn" style="width: 48%; height: 60px; background-color: #009CDB; color: #ffff;"
+                    onclick="window.location.href='info.html'">
+                Informações sobre resíduos
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Card Sections -->
+<section class="container-cards d-flex flex-column align-items-center" style="gap: 50px;">
+    <div class="card-page d-flex flex-column justify-content-center align-items-center" style="width: 90%;">
+        <div class="container-icone" style="border: #58CC02 solid 1px;">
+            <img src="assets/images/icones/chapeu-de-graduacao.png" alt="Icone de um Hospital" style="height: 60%;">
+        </div>
+        <h3 class="card-titulo">
+            Educativo
+        </h3>
+        <p class="card-paragrafo text-center">
+            Aprenda sobre os diferentes tipos de resíduos hospitalares e como descartá-los corretamente.
+        </p>
+    </div>
+    <div class="card-page d-flex flex-column justify-content-center align-items-center" style="width: 90%;">
+        <div class="container-icone" style="border: #009CDB solid 1px;">
+            <img src="assets/images/icones/quebra-cabeca.png" alt="Icone de um Hospital" style="height: 60%;">
+        </div>
+        <h3 class="card-titulo">
+            Interativo
+        </h3>
+        <p class="card-paragrafo text-center">
+            Jogue e aprenda de forma interativa, testando seus conhecimentos sobre descarte de resíduos.
+        </p>
+    </div>
+    <div class="card-page d-flex flex-column justify-content-center align-items-center" style="width: 90%;">
+        <div class="container-icone" style="border: #58CC02 solid 1px;">
+            <img src="assets/images/icones/verificar.png" alt="Icone de um Hospital" style="height: 60%;">
+        </div>
+        <h3 class="card-titulo">
+            Prático
+        </h3>
+        <p class="card-paragrafo text-center">
+            Aplique o conhecimento adquirido no seu dia a dia, contribuindo para um ambiente hospitalar mais seguro.
+        </p>
+    </div>
+</section>
+
+
+<script type="module" src="js/script_main.js"></script>

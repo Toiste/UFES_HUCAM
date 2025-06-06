@@ -1,0 +1,322 @@
+/* Estilos específicos para a página de resíduos */
+
+/* Cartões de resíduos */
+.residuo-card {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.residuo-card:hover {
+    transform: translateY(-5px);
+}
+
+.residuo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    width: 100px;
+    padding: 20px;
+}
+
+.residuo-content {
+    flex: 1;
+    padding: 25px;
+    background: white;
+}
+
+/* Cores específicas para cada grupo */
+.grupo-a {
+    border-left: 5px solid #e53935;
+}
+
+.grupo-a .residuo-icon {
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+}
+
+.grupo-b {
+    border-left: 5px solid #fb8c00;
+}
+
+.grupo-b .residuo-icon {
+    background: linear-gradient(135deg, #fb8c00 0%, #ef6c00 100%);
+}
+
+.grupo-c {
+    border-left: 5px solid #ffeb3b;
+}
+
+.grupo-c .residuo-icon {
+    background: linear-gradient(135deg, #ffeb3b 0%, #fbc02d 100%);
+    color: #333;
+}
+
+.grupo-d {
+    border-left: 5px solid #43a047;
+}
+
+.grupo-d .residuo-icon {
+    background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+}
+
+.grupo-e {
+    border-left: 5px solid #1e88e5;
+}
+
+.grupo-e .residuo-icon {
+    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+}
+
+/* Listas e itens */
+.residuo-list {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.residuo-list li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 10px;
+}
+
+.residuo-list li::before {
+    content: "•";
+    color: #fb8c00;
+    font-weight: bold;
+    position: absolute;
+    left: -10px;
+}
+
+/* Subgrupos */
+.subgrupos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.subgrupo-item {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 5px;
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+}
+
+.subgrupo-tag {
+    background: #e53935;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.subgrupo-desc {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Info box */
+.info-box {
+    background: #e8f5e9;
+    border-left: 4px solid #43a047;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+}
+
+/* Recicláveis */
+.reciclaveis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.reciclavel-item {
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    min-width: 100px;
+}
+
+.papel {
+    background: #2196f3;
+}
+
+.plastico {
+    background: #f44336;
+}
+
+.metal {
+    background: #ffc107;
+    color: #333;
+}
+
+.vidro {
+    background: #4caf50;
+}
+
+.organico {
+    background: #795548;
+}
+
+/* Exemplos */
+.exemplos-box {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.exemplos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.exemplo-item {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #e1e1e1;
+}
+
+/* Referências */
+.referencias-section {
+    background: #f5f5f5;
+}
+
+.referencias-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.referencia-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #2c5aa0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.referencia-item p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Botões de navegação */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #2c5aa0;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-button:hover {
+    background: #1e3a5f;
+    transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .residuo-card {
+        flex-direction: column;
+    }
+    
+    .residuo-icon {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .subgrupos {
+        flex-direction: column;
+    }
+    
+    .reciclaveis {
+        justify-content: center;
+    }
+    
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-button {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .exemplos-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Animações */
+.residuo-card {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.grupo-a {
+    animation-delay: 0.1s;
+}
+
+.grupo-b {
+    animation-delay: 0.2s;
+}
+
+.grupo-c {
+    animation-delay: 0.3s;
+}
+
+.grupo-d {
+    animation-delay: 0.4s;
+}
+
+.grupo-e {
+    animation-delay: 0.5s;
+}
+
+.referencias-section {
+    animation: fadeInUp 0.6s ease-out;
+    animation-delay: 0.6s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
