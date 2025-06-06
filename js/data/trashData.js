@@ -4,7 +4,7 @@ const GrupoD = "Resíduos Comuns";
 const GrupoE = "Resíduos perfurocortantes";
 const Reciclaveis = "Reciclaveis";
 
-export const totalRounds =  10;
+export const totalRounds =  3;
 export const questionsPerRound =  2;
 
 export const trashListOrig = [

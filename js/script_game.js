@@ -8,7 +8,7 @@ const answerOptions = [...trashGroups];
 /* ------------------------------------------------ ELEMENTOS ------------------------------------------------ */
 const trashNameElement = document.getElementById("trash-name");
 const optionsContainer = document.getElementById("options-container");
-const stepContainer = document.getElementById("step-container");
+const enfermeiraContainer = document.getElementById("step-container");
 
 const resultContainer = document.getElementById("result-container");
 const resultTitle = document.getElementById("result-title");
@@ -60,7 +60,15 @@ function toggleElDisplayFlex(el, display){
     if(display)
         el.style.display = "flex";
     else
-        el.style.removeProperty("display");
+        el.style.display = "none";
+        // el.style.removeProperty("display");
+}
+
+function setResult(title, subtitle, imgObj){
+    resultTitle.textContent = title;
+    resultScoreElement.textContent = subtitle;
+    resultImg.src = imgObj.src;
+    resultImg.alt = imgObj.alt;
 }
 
 
@@ -248,8 +256,9 @@ document.getElementById("start-button").addEventListener("click", function () {
     setTimeout(() => {
         startScreen.style.display = "none"; // Remove a tela depois da animação
         // stepContainer.style.display = "block";
-        toggleElDisplayBlock(stepContainer, true)
-        optionsContainer.style.display = "flex";
+        toggleElDisplayBlock(enfermeiraContainer, true)
+        // optionsContainer.style.display = "flex";
+        toggleElDisplayFlex(optionsContainer, true)
     }, 1000); // Tempo deve ser igual ao da animação (1s)
 });
 function reset(){
@@ -312,9 +321,9 @@ function showRoundComplete() {
     updateVisuals(true);
 
     // stepContainer.style.display = "none";
-    toggleElDisplayBlock(stepContainer, false)
-    optionsContainer.style.display = "none";
-
+    toggleElDisplayBlock(enfermeiraContainer, false)
+    // optionsContainer.style.display = "none";
+    toggleElDisplayFlex(optionsContainer, false)
     // Aguarda um ciclo de renderização antes de mostrar a mensagem
     setTimeout(() => {
         roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
@@ -323,9 +332,9 @@ function showRoundComplete() {
         // Depois de 3 segundos, esconde novamente e continua
         setTimeout(() => {
             // stepContainer.style.removeProperty("display");
-            toggleElDisplayBlock(stepContainer, true)
-            optionsContainer.style.removeProperty("display");
-
+            toggleElDisplayBlock(enfermeiraContainer, true)
+            // optionsContainer.style.removeProperty("display");
+            toggleElDisplayFlex(optionsContainer, true)
             roundCompleteTitle.innerText = "";
             roundCompleteContainer.style.display = "none";
             nextStep();
@@ -378,26 +387,26 @@ function showResults() {
     }
     resultTimeTitle.innerText = txt;
 
-    // stepContainer.style.display = "none";
-    toggleElDisplayBlock(stepContainer, false)
-    optionsContainer.style.display = "none"
-    resultContainer.style.display = "flex";
+    toggleElDisplayBlock(enfermeiraContainer, false)
+    toggleElDisplayFlex(optionsContainer, false)
+    toggleElDisplayFlex(resultContainer, true)
 
+    // if (saveObject.correctAnswers === saveObject.totalQuestions) {
     if (saveObject.correctAnswers === saveObject.totalQuestions) {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou todas as ${saveObject.totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResult(
+            "Parabéns!!",
+            `Você acertou todas as ${saveObject.totalQuestions} questões!`,
+            gifTrofeu);
     } else if (saveObject.correctAnswers === 0) {
-        resultTitle.textContent = "Não foi dessa vez!";
-        resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResult(
+            "Não foi dessa vez!",
+            `Você não acertou nenhuma questão!`,
+            gifTrofeu);
     } else {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou ${saveObject.correctAnswers} de ${saveObject.totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResult(
+            "Parabéns!!",
+            `Você acertou ${saveObject.correctAnswers} de ${saveObject.totalQuestions} questões!`,
+            gifTrofeu);
     }
 }
 
