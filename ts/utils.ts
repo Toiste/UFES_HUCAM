@@ -1,9 +1,21 @@
-import { appName, version, User } from './data';
+import {Save, TimesPerQuestionDict} from "./types";
+import {totalLivesPerRound} from "./data";
+import {progressElementQuestion} from "./elements";
 
-export function displayAppInfo(): string {
-    return `${appName} v${version}`;
-}
+export function getTotalMsTimePerQuestion(dict: TimesPerQuestionDict) {
+    let totalMsAllQuestion = 0;
+    const keysRounds: string[] = Object.keys(dict);
 
-export function greetUser(user: User): string {
-    return `Hello, ${user.name}!`;
+    keysRounds.forEach((kr: string) => {
+        const roundQuestions = dict[Number(kr)];
+        const keysQuestions: string[] = Object.keys(roundQuestions);
+        keysQuestions.forEach((kq: string) => {
+            const questionTimes = roundQuestions[Number(kq)];
+            const questionTimeEnd = questionTimes[1];
+            const questionTimeBegin = questionTimes[0];
+            totalMsAllQuestion += questionTimeEnd - questionTimeBegin;
+        });
+    });
+
+    return totalMsAllQuestion;
 }
