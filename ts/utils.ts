@@ -1,7 +1,8 @@
-import {Tuple} from "./types";
+import {TimesPerQuestionDict} from "./types";
 
-export function getTotalMsTimeAllQuestions(dict: { [key:string]:Tuple<number> }) {
+export function getTotalMsTimeAllQuestions(dict: TimesPerQuestionDict) {
     let totalMsAllQuestion = 0;
+    debugger;
     const keysRounds: string[] = Object.keys(dict);
 
     keysRounds.forEach((kr: string) => {
@@ -16,7 +17,6 @@ export function getTotalMsTimeAllQuestions(dict: { [key:string]:Tuple<number> })
 
 export function getTimeDifference(diffInMs: number) {
     // Calculate difference in milliseconds
-    // const diffInMs = Math.abs(endDate - startDate);
 
     // Convert to different units
     const seconds = Math.floor(diffInMs / 1000);

@@ -1,7 +1,7 @@
 import {generateRandomRounds, localStorageKeyName, totalLivesPerRound} from "./data";
-import {Save, Tuple} from "./types";
+import {Save} from "./types";
 
-function createSave(): Save|null {
+function createSave(): Save | null {
     try {
         let roundsGenerated = generateRandomRounds();
         const baseObject = {
@@ -20,39 +20,37 @@ function createSave(): Save|null {
     }
 }
 
-function loadSave():Save|null{
+function loadSave(): Save | null {
     const item = window.localStorage.getItem(localStorageKeyName);
-    if(item === null){
+    if (item === null) {
         return null;
     }
     try {
         return JSON.parse(item) as Save;
-    }
-    catch(e){
+    } catch (e) {
         console.log("error parsing");
         console.log(e);
         return null;
     }
 }
 
-export const loadOrGenerateSaveObjectAndStart = async ():Promise<Save> => {
-    return new Promise((resolve, reject)=>{
-        try{
+export const loadOrGenerateSaveObjectAndStart = async (): Promise<Save> => {
+    return new Promise((resolve, reject) => {
+        try {
             const loaded = loadSave();
-            if(loaded !== null)  return resolve(loaded);
+            if (loaded !== null) return resolve(loaded);
             let created = createSave();
-            while(created === null){
+            while (created === null) {
                 created = createSave()
             }
             return resolve(created);
-        }
-        catch (e){
+        } catch (e) {
             throw e;
         }
     })
 };
 
-export const saveSave = (saveObj:Save) => {
+export const saveSave = (saveObj: Save) => {
     window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObj}))
 };
 

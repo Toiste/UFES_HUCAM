@@ -1,9 +1,5 @@
-export type Tuple<T> = [start:T, end:T]
-export type TimesPerQuestionDict = Dictionary<Dictionary<Tuple<number>>>;
-
-
-export type TimesPerQuestionDictV2 = Map<string, Tuple<number>>
-
+export type Tuple<T> = [start: T, end: T]
+export type TimesPerQuestionDict = { [key: string]: Tuple<number> };
 
 
 export interface Save {
@@ -13,7 +9,7 @@ export interface Save {
     currentRound: number,
     currentQuestion: number,
     correctAnswers: number,
-    timePerQuestion: { [key:string]:Tuple<number> }
+    timePerQuestion: TimesPerQuestionDict
 }
 
 export interface Dictionary<T> {
@@ -28,7 +24,8 @@ export type Question = {
 export type Round = Array<Question>;
 export type RoundList = Array<Round>;
 export type TrashGroup = { name: string, image: string };
-export enum ETypeTimePerQuestion{
+
+export enum ETypeTimePerQuestion {
     START,
     END
 }
