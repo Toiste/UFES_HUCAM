@@ -1,5 +1,5 @@
 import {generateRandomRounds, localStorageKeyName, totalLivesPerRound} from "./data";
-import {Save} from "./types";
+import {Save, TimesPerQuestionDictV2, Tuple} from "./types";
 
 function createSave(): Save|null {
     try {
@@ -11,7 +11,7 @@ function createSave(): Save|null {
             currentRound: 0,
             currentQuestion: 0,
             correctAnswers: 0,
-            timePerQuestion: {}
+            timePerQuestion: new Map<string, Tuple<number>>()
         } as Save;
         return {...baseObject} as Save;
     } catch (e) {
@@ -35,7 +35,22 @@ function loadSave():Save|null{
     }
 }
 
-export const loadOrGenerateSaveObject = () => loadSave() ?? createSave();
+export const loadOrGenerateSaveObjectAndStart = async ():Promise<Save> => {
+    return new Promise((resolve, reject)=>{
+        try{
+            const loaded = loadSave();
+            if(loaded !== null)  return resolve(loaded);
+            let created = createSave();
+            while(created === null){
+                created = createSave()
+            }
+            return resolve(created);
+        }
+        catch (e){
+            throw e;
+        }
+    })
+};
 
 export const saveSave = (saveObj:Save) => {
     window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObj}))

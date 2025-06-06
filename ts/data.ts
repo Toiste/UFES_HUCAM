@@ -1,4 +1,4 @@
-import {Question, RoundList} from "./types";
+import {Question, RoundList, TrashGroup} from "./types";
 
 const GrupoA = "Resíduo Biológico Infectante";
 const GrupoB = "Resíduos químicos";
@@ -67,7 +67,7 @@ export const trashListOrig = [
     {name: "ESCALPES USADOS PARA INFUSÃO DE ANTINEOPLASICOS", group: GrupoE, hideGroups: [GrupoB]}, //GrupoBE
 ];
 
-const trashGroups = [
+const trashGroups:Array<TrashGroup> = [
     {name: GrupoA, image: "GrupoA.jpg"},
     {name: GrupoB, image: "GrupoB.jpg"},
     {name: GrupoD, image: "GrupoD.png"},

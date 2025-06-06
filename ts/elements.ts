@@ -18,6 +18,14 @@ export const progressContainer = getById("step-counter-container")!;
 export const vidas = getById("vidas")!;
 export const roundCounter = getById("round-counter")!;
 
-function getById(id:string):HTMLElement{
+export const startBtnElement = getById("start-button");
+export const startScreen = getById("start-screen");
+
+export const resetBtn = getById("reset-button");
+export const resetBtnArrow = getById("reset-button-arrow");
+
+
+
+function getById(id:string):any{
     return document.getElementById(id)!;
 }
