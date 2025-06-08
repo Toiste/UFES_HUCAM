@@ -1,4 +1,4 @@
-import {TimesPerQuestionDict} from "./types";
+import {Timespan, TimesPerQuestionDict} from "./types";
 
 export function getTotalMsTimeAllQuestions(dict: TimesPerQuestionDict) {
     let totalMsAllQuestion = 0;
@@ -15,7 +15,7 @@ export function getTotalMsTimeAllQuestions(dict: TimesPerQuestionDict) {
     return totalMsAllQuestion;
 }
 
-export function getTimeDifference(diffInMs: number) {
+export function getTimeDifference(diffInMs: number):Timespan {
     // Calculate difference in milliseconds
 
     // Convert to different units

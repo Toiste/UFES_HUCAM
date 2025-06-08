@@ -29,3 +29,12 @@ export enum ETypeTimePerQuestion {
     START,
     END
 }
+
+export type Timespan = {
+    hours:number,
+    minutes:number,
+    seconds:number,
+    totalHours:number,
+    totalMinutes:number,
+    totalSeconds:number,
+}

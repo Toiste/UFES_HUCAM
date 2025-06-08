@@ -1,4 +1,6 @@
 import {resetGame} from "./save";
+import {Timespan} from "./types";
+import {gifTrofeu} from "./assets";
 
 export const trashNameElement = getById("trash-name")!;
 export const optionsContainer = getById("options-container")!;
@@ -102,4 +104,51 @@ export function updateQuestionsProgress(list: Array<any>, current: number, showF
     progressElementQuestion.style.width = `${currProgressQuestion}%`;
     progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
     progressElementQuestion.innerText = `${currProgressQuestion}%`;
+}
+
+export function setTotalTime(ts:Timespan){
+    const temHoras = ts.hours > 0;
+    const temMinutos = ts.minutes > 0;
+    const temSegundos = ts.seconds > 0;
+    let txt = "Tempo total: ";
+    if (temHoras) {
+        txt += `${ts.hours} horas`;
+        if (temMinutos && temSegundos) {
+            txt += ", "
+        } else if (temMinutos || temSegundos) {
+            txt += " e "
+        }
+    }
+    if (temMinutos) {
+        txt += `${ts.minutes} minutos`;
+        if (temSegundos) txt += " e "
+    }
+    if (temSegundos) {
+        txt += `${ts.seconds} segundos`;
+    }
+    resultTimeTitle.innerText = txt;
+}
+
+export function setResultAfterEnd(correctAnswers:number,totalQuestions:number){
+    stepContainer.style.display = "none";
+    progressContainer.style.display = "none";
+    optionsContainer.style.display = "none"
+    resultContainer.style.display = "flex";
+
+    if (correctAnswers === totalQuestions) {
+        resultTitle.textContent = "Parabéns!!";
+        resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
+    } else if (correctAnswers === 0) {
+        resultTitle.textContent = "Não foi dessa vez!";
+        resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
+    } else {
+        resultTitle.textContent = "Parabéns!!";
+        resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
+        resultImg.src = gifTrofeu.src;
+        resultImg.alt = gifTrofeu.alt;
+    }
 }

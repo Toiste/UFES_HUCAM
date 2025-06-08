@@ -5,21 +5,15 @@ import {
     EShowAfterQuestion,
     optionsContainer,
     progressContainer,
-    resultContainer,
-    resultImg,
-    resultScoreElement,
-    resultTimeTitle,
-    resultTitle,
     roundCounter,
     startBtnElement,
     startScreen,
     stepContainer,
     trashNameElement, updateQuestionsProgress,
-    vidas
+    vidas, setTotalTime, setResultAfterEnd
 } from "./elements";
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
-import {gifTrofeu} from "./assets";
 
 let groupSelected: string | null = null;
 
@@ -278,51 +272,8 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
 function showResults() {
     saveSave(saveObject)
     updateVisuals(isLastQuestionOfLastRound())
-
-    const timespan = getTimeDifference(getTotalMsTimeAllQuestions(saveObject.timePerQuestion));
-
-    const temHoras = timespan.hours > 0;
-    const temMinutos = timespan.minutes > 0;
-    const temSegundos = timespan.seconds > 0;
-    let txt = "Tempo total: ";
-    if (temHoras) {
-        txt += `${timespan.hours} horas`;
-        if (temMinutos && temSegundos) {
-            txt += ", "
-        } else if (temMinutos || temSegundos) {
-            txt += " e "
-        }
-    }
-    if (temMinutos) {
-        txt += `${timespan.minutes} minutos`;
-        if (temSegundos) txt += " e "
-    }
-    if (temSegundos) {
-        txt += `${timespan.seconds} segundos`;
-    }
-    resultTimeTitle.innerText = txt;
-
-    stepContainer.style.display = "none";
-    progressContainer.style.display = "none";
-    optionsContainer.style.display = "none"
-    resultContainer.style.display = "flex";
-
-    if (saveObject.correctAnswers === saveObject.totalQuestions) {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou todas as ${saveObject.totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
-    } else if (saveObject.correctAnswers === 0) {
-        resultTitle.textContent = "Não foi dessa vez!";
-        resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
-    } else {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou ${saveObject.correctAnswers} de ${saveObject.totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
-    }
+    setTotalTime(getTimeDifference(getTotalMsTimeAllQuestions(saveObject.timePerQuestion)));
+    setResultAfterEnd(saveObject.correctAnswers, saveObject.totalQuestions);
 }
 
 function nextStep() {
