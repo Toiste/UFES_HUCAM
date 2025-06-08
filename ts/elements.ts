@@ -6,13 +6,13 @@ export const stepContainer = getById("step-container")!;
 
 export const resultContainer = getById("result-container")!;
 export const resultTitle = getById("result-title")!;
-export const resultImg = getById("result-img")!;
+export const resultImg = getById("result-img")! as HTMLImageElement;
 export const resultScoreElement = getById("result-score")!;
 export const resultTimeTitle = getById("time-title")!;
 
-export const roundCompleteContainer = getById("round-complete-container")!;
-export const roundCompleteTitle = getById("round-complete-title")!;
-export const roundCompleteBtn = getById("round-complete-btn")!;
+// export const roundCompleteContainer = getById("round-complete-container")!;
+// export const roundCompleteTitle = getById("round-complete-title")!;
+// export const roundCompleteBtn = getById("round-complete-btn")!;
 
 
 export const progressElementQuestion = getById("progress-bar-step-question")!;
@@ -28,19 +28,49 @@ export const startScreen = getById("start-screen");
 export const resetBtn = getById("reset-button");
 export const resetBtnArrow = getById("reset-button-arrow");
 
-export const perguntaCorretaContainer = getById("pergunta-respondida-sucesso-container");
-export const perguntaCorretaBtn = getById("next-question-button");
-
-export const perguntaErradaContainer = getById("pergunta-respondida-erro-container");
-export const perguntaErradaBtn = getById("try-again-question-button");
-
-export const noMoreLivesResultContainer = getById("pergunta-respondida-no-more-lives-container");
-export const noMoreLivesResultBtn = getById("pergunta-respondida-no-more-lives-btn");
-
-export const gameEndLivesResultContainer = getById("pergunta-respondida-game-end-container");
-export const gameEndLivesResultBtn = getById("pergunta-respondida-game-end-btn");
+export const afterAnswerClickContainer = getById("after-answer-click-container");
+export const afterAnswerClickTitle = getById("after-answer-click-title");
+export const afterAnswerClickImg = getById("after-answer-click-img") as HTMLImageElement    ;
+export const afterAnswerClickButton = getById("after-answer-click-button") as HTMLButtonElement;
 
 
+export type AfterAnswerConfig = {
+    title:string,
+    imgSrc:string,
+    imgAlt:string,
+    btnText:string|null,
+    btnClass:"success"|"danger"|null,
+    btnFn:any,
+}
+
+export function bbbb(visible:boolean){
+    if(visible)
+        afterAnswerClickContainer.style.display = "flex";
+    else
+        afterAnswerClickContainer.style.display = "none";
+}
+
+export function aaaa (config:AfterAnswerConfig){
+    bbbb(true)
+    afterAnswerClickButton.onclick = null;
+    afterAnswerClickTitle.textContent = config.title;
+    afterAnswerClickImg.src = config.imgSrc;
+    afterAnswerClickImg.alt = config.imgAlt;
+    if(config.btnText !== null){
+        afterAnswerClickButton.classList.remove("btn-danger");
+        afterAnswerClickButton.classList.remove("btn-success");
+        afterAnswerClickButton.classList.add(`btn-${config.btnClass}`);
+        afterAnswerClickButton.style.removeProperty("display");
+        afterAnswerClickButton.innerText = config.btnText;
+        afterAnswerClickButton.onclick = ()=> {
+            config.btnFn();
+            bbbb(false)
+        };
+    }
+    else{
+        afterAnswerClickButton.style.display = "none";
+    }
+}
 
 export enum EShowAfterQuestion {
     WRONG_ANSWER,
@@ -50,72 +80,10 @@ export enum EShowAfterQuestion {
     ROUND_END
 }
 
-export function clearRespostaPergunta(){
-    toggleNoMoreLives(false);
-    togglePerguntaCorreta(false);
-    togglePerguntaErrada(false);
-    toggleGameEnd(false);
-    toggleRoundEnd(false);
-}
-
-export function handleRespostaPergunta(option:EShowAfterQuestion|null = null)
-{
-    clearRespostaPergunta();
-    if(option === null) return;
-
-    if(option === EShowAfterQuestion.WRONG_ANSWER) {
-        togglePerguntaErrada(true);
-        return
-    }
-    if(option === EShowAfterQuestion.CORRECT_ANSWER) {
-        togglePerguntaCorreta(true);
-        return
-    }
-    if(option === EShowAfterQuestion.NO_MORE_LIVES) {
-        toggleNoMoreLives(true);
-        return
-    }
-    if(option === EShowAfterQuestion.GAME_END) {
-        toggleGameEnd(true);
-        return
-    }
-    if(option === EShowAfterQuestion.ROUND_END) {
-        toggleRoundEnd(true);
-        return
-    }
-}
 
 
 
-function toggleNoMoreLives(show:boolean){
-    if(show) noMoreLivesResultContainer.style.display = "flex";
-    else noMoreLivesResultContainer.style.display = "none";
-}
-
-function togglePerguntaCorreta(show:boolean){
-    if(show) perguntaCorretaContainer.style.display = "flex";
-    else perguntaCorretaContainer.style.display = "none";
-}
-
-function togglePerguntaErrada(show:boolean){
-    if(show) perguntaErradaContainer.style.display = "flex";
-    else perguntaErradaContainer.style.display = "none";
-}
-
-function toggleGameEnd(show:boolean){
-    if(show) gameEndLivesResultContainer.style.display = "flex";
-    else gameEndLivesResultContainer.style.display = "none";
-}
-function toggleRoundEnd(show:boolean){
-    if(show) roundCompleteContainer.style.display = "flex";
-    else roundCompleteContainer.style.display = "none";
-}
-
-
-
-
-
-function getById(id:string):any{
+function getById(id:string):HTMLElement{
     return document.getElementById(id)!;
 }
 

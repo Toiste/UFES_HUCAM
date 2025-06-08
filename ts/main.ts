@@ -1,26 +1,15 @@
 import {loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
-    clearRespostaPergunta,
+    aaaa, bbbb,
     EShowAfterQuestion,
-    gameEndLivesResultBtn,
-    handleRespostaPergunta,
-    noMoreLivesResultBtn,
     optionsContainer,
-    perguntaCorretaBtn,
-    perguntaErradaBtn,
     progressContainer,
-    progressElementQuestion,
-    resetBtn,
-    resetBtnArrow,
     resultContainer,
     resultImg,
     resultScoreElement,
     resultTimeTitle,
     resultTitle,
-    roundCompleteBtn,
-    roundCompleteContainer,
-    roundCompleteTitle,
     roundCounter,
     startBtnElement,
     startScreen,
@@ -160,7 +149,7 @@ function getNextTrashAndGenerateAnswersOptions() {
             <img src="assets/images/${group.image}" alt="${group.name}">
             <p>${group.name}</p>
         `;
-        card.addEventListener("click", (event) => selectGroup(event, group.name, currentTrash.group), {once: true});
+        card.addEventListener("click", (event) => selectGroup(event, group.name, currentTrash.group));
         optionsContainer.appendChild(card);
     });
 }
@@ -183,9 +172,11 @@ function loadStep() {
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
 function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: string) {
+    console.log("groupSelected before", groupSelected);
     if (groupSelected !== null) return;
     const target = event.currentTarget as HTMLElement;
     groupSelected = selectedGroup;
+    console.log("groupSelected after", groupSelected);
     setTimePerQuestion(ETypeTimePerQuestion.END);
 
 
@@ -195,6 +186,9 @@ function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: str
         target.classList.add("correct")
         if (isLastQuestionOfLastRound())
             return handleRespostaPergunta(EShowAfterQuestion.GAME_END);
+        if (isLastQuestionOfRound()) {
+            return handleRespostaPergunta(EShowAfterQuestion.ROUND_END);
+        }
         return handleRespostaPergunta(EShowAfterQuestion.CORRECT_ANSWER);
     } else {
         target.classList.add("incorrect")
@@ -207,42 +201,115 @@ function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: str
     }
 }
 
-roundCompleteBtn.addEventListener("click", () => {
-    stepContainer.style.removeProperty("display");
-    optionsContainer.style.removeProperty("display");
-    groupSelected = null;
-    nextStep();
-    clearRespostaPergunta()
-});
+// roundCompleteBtn.addEventListener("click", () => {
+//     stepContainer.style.removeProperty("display");
+//     optionsContainer.style.removeProperty("display");
+//     groupSelected = null;
+//     nextStep();
+//     clearRespostaPergunta()
+// });
 
-perguntaCorretaBtn.addEventListener("click", function () {
-    if (isLastQuestionOfRound()) {
-        updateVisuals(true);
-        roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
-        stepContainer.style.display = "none";
-        progressContainer.style.display = "none";
-        optionsContainer.style.display = "none";
-        return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
-    }
-    else {
-        groupSelected = null;
-        nextStep();
-        clearRespostaPergunta()
-    }
-})
-perguntaErradaBtn.addEventListener("click", function () {
-    groupSelected = null;
-    clearRespostaPergunta()
-})
+// perguntaCorretaBtn.addEventListener("click", function () {
+//     if (isLastQuestionOfRound()) {
+//         updateVisuals(true);
+//         roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
+//         stepContainer.style.display = "none";
+//         progressContainer.style.display = "none";
+//         optionsContainer.style.display = "none";
+//         return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
+//     }
+//     else {
+//         groupSelected = null;
+//         nextStep();
+//         clearRespostaPergunta()
+//     }
+// })
+// perguntaErradaBtn.addEventListener("click", function () {
+//     groupSelected = null;
+//     clearRespostaPergunta()
+// })
 
-noMoreLivesResultBtn.addEventListener("click", function () {
-    clearRespostaPergunta()
-    showResults()
-})
-gameEndLivesResultBtn.addEventListener("click", function () {
-    clearRespostaPergunta()
-    showResults()
-})
+// noMoreLivesResultBtn.addEventListener("click", function () {
+//     clearRespostaPergunta()
+//     showResults()
+// })
+// gameEndLivesResultBtn.addEventListener("click", function () {
+//     clearRespostaPergunta()
+//     showResults()
+// })
+
+export function handleRespostaPergunta(option: EShowAfterQuestion | null = null) {
+    bbbb(false)
+    if (option === null) return;
+
+    if (option === EShowAfterQuestion.WRONG_ANSWER) {
+        aaaa({
+            title: "Você errou!",
+            imgAlt: "Mão segurando placa de errado",
+            imgSrc: "assets/images/icones/wrong-decision.gif",
+            btnClass: "danger",
+            btnText: "Tentar novamente",
+            btnFn: () => {
+                groupSelected = null;
+            }
+        })
+        return
+    }
+    if (option === EShowAfterQuestion.CORRECT_ANSWER) {
+        aaaa({
+            title: "Você acertou!",
+            imgAlt: "Joinha com um simbolo de correto",
+            imgSrc: "assets/images/icones/like.gif",
+            btnClass: "success",
+            btnText: "Próxima pergunta",
+            btnFn: () => {
+                groupSelected = null;
+                nextStep();
+            }
+        })
+        return
+    }
+    if (option === EShowAfterQuestion.NO_MORE_LIVES) {
+        aaaa({
+            title: "Suas vidas acabaram!",
+            imgAlt: "Mão segurando placa de errado",
+            imgSrc: "assets/images/icones/warning.gif",
+            btnClass: "danger",
+            btnText: "Mostrar resultados",
+            btnFn: () => {
+                showResults()
+            }
+        })
+        return
+    }
+    if (option === EShowAfterQuestion.GAME_END) {
+        aaaa({
+            title: "Você chegou ao final!",
+            imgAlt: "Confetti",
+            imgSrc: "assets/images/icones/confetti.gif",
+            btnClass: "success",
+            btnText: "Mostrar resultados",
+            btnFn: () => {
+                showResults()
+            }
+        })
+        return
+    }
+    if (option === EShowAfterQuestion.ROUND_END) {
+        aaaa({
+            title: `Round ${saveObject.currentRound + 1} completo!`,
+            imgAlt: "Check",
+            imgSrc: "assets/images/icones/verificar2.gif",
+            btnClass: "success",
+            btnText: "Próximo round",
+            btnFn: () => {
+                groupSelected = null;
+                nextStep();
+            }
+        })
+        return
+    }
+}
 
 function showResults() {
     saveSave(saveObject)
