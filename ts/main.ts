@@ -201,43 +201,6 @@ function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: str
     }
 }
 
-// roundCompleteBtn.addEventListener("click", () => {
-//     stepContainer.style.removeProperty("display");
-//     optionsContainer.style.removeProperty("display");
-//     groupSelected = null;
-//     nextStep();
-//     clearRespostaPergunta()
-// });
-
-// perguntaCorretaBtn.addEventListener("click", function () {
-//     if (isLastQuestionOfRound()) {
-//         updateVisuals(true);
-//         roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
-//         stepContainer.style.display = "none";
-//         progressContainer.style.display = "none";
-//         optionsContainer.style.display = "none";
-//         return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
-//     }
-//     else {
-//         groupSelected = null;
-//         nextStep();
-//         clearRespostaPergunta()
-//     }
-// })
-// perguntaErradaBtn.addEventListener("click", function () {
-//     groupSelected = null;
-//     clearRespostaPergunta()
-// })
-
-// noMoreLivesResultBtn.addEventListener("click", function () {
-//     clearRespostaPergunta()
-//     showResults()
-// })
-// gameEndLivesResultBtn.addEventListener("click", function () {
-//     clearRespostaPergunta()
-//     showResults()
-// })
-
 export function handleRespostaPergunta(option: EShowAfterQuestion | null = null) {
     bbbb(false)
     if (option === null) return;

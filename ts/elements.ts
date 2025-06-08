@@ -10,13 +10,7 @@ export const resultImg = getById("result-img")! as HTMLImageElement;
 export const resultScoreElement = getById("result-score")!;
 export const resultTimeTitle = getById("time-title")!;
 
-// export const roundCompleteContainer = getById("round-complete-container")!;
-// export const roundCompleteTitle = getById("round-complete-title")!;
-// export const roundCompleteBtn = getById("round-complete-btn")!;
-
-
 export const progressElementQuestion = getById("progress-bar-step-question")!;
-// export const progressRoundElement = getById("progress-bar-step-round")!;
 export const progressContainer = getById("step-counter-container")!;
 
 export const vidas = getById("vidas")!;
