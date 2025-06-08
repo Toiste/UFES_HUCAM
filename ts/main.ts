@@ -26,7 +26,7 @@ import {gifTrofeu} from "./assets";
 
 let saveObject = {} as Save;
 loadOrGenerateSaveObjectAndStart().then(x => {
-        saveObject = x
+        saveObject = {...x};
         startBtnElement.addEventListener("click", function () {
             startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
             //Se o save foi carregado finalizado, não mostrar ao carregar
