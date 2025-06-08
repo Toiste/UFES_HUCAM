@@ -1,5 +1,5 @@
 import {resetGame} from "./save";
-import {Timespan} from "./types";
+import {AfterAnswerConfig, Timespan} from "./types";
 import {gifTrofeu} from "./assets";
 
 export const trashNameElement = getById("trash-name")!;
@@ -29,15 +29,6 @@ export const afterAnswerClickTitle = getById("after-answer-click-title");
 export const afterAnswerClickImg = getById("after-answer-click-img") as HTMLImageElement    ;
 export const afterAnswerClickButton = getById("after-answer-click-button") as HTMLButtonElement;
 
-
-export type AfterAnswerConfig = {
-    title:string,
-    imgSrc:string,
-    imgAlt:string,
-    btnText:string|null,
-    btnClass:"success"|"danger"|null,
-    btnFn:any,
-}
 
 export function toggleAfterAnswerResultVisibility(visible:boolean){
     if(visible)

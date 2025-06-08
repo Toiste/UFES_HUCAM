@@ -1,5 +1,9 @@
-import {loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
-import {answerOptions, totalLivesPerRound} from "./data";
+import {
+    loadOrGenerateSaveObjectAndStartEvent,
+    saveCreatedOrLoadedEvent,
+    saveSave
+} from "./save";
+import {answerOptions, localStorageKeyNameReset, totalLivesPerRound} from "./data";
 import {
     setAfterAnswerResult, toggleAfterAnswerResultVisibility,
     EShowAfterQuestion,
@@ -14,12 +18,24 @@ import {
 } from "./elements";
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
+let dots = 0;
 
 let groupSelected: string | null = null;
-
 let saveObject = {} as Save;
-loadOrGenerateSaveObjectAndStart().then(x => {
-        saveObject = {...x};
+let dotsInterval = setInterval(()=> {
+    startBtnElement.textContent = "Carregando"+".".repeat(dots);
+    if(dots >=3) dots = 0;
+    else dots = dots + 1;
+}, 500)
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener(saveCreatedOrLoadedEvent, (e) => {
+        saveObject = (e as CustomEvent<Save>).detail;
+        console.log("saveObject",saveObject)
+        clearInterval(dotsInterval);
+        startBtnElement.textContent = "Começar";
+        startBtnElement.className = "start-button";
+
         startBtnElement.addEventListener("click", function () {
             startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
             //Se o save foi carregado finalizado, não mostrar ao carregar
@@ -30,16 +46,28 @@ loadOrGenerateSaveObjectAndStart().then(x => {
                 stepContainer.style.display = "block";
                 optionsContainer.style.display = "flex";
                 progressContainer.style.display = "flex";
-
             }, 1000); // Tempo deve ser igual ao da animação (1s)
+
         });
-        if (window.location.hostname === "localhost") {
+        if (window.location.hostname === "localhost" || window.localStorage.getItem(localStorageKeyNameReset) !== null) {
+            console.log("aaaa")
             startBtnElement.click()
+            window.localStorage.removeItem(localStorageKeyNameReset);
             // showResults()
         }
-    }
-).catch(e => console.log(e));
 
+    })
+    setTimeout(loadOrGenerateSaveObjectAndStartEvent, 500);
+});
+
+function start() {
+    updateVisuals()
+    //Se carregou o save finalizado ou sem vida, mostra direto a parte de resultados
+    if (isFinalizedOrHasNoLivesRemaining())
+        showResults()
+    else
+        loadStep()
+}
 
 function isFinalizedOrHasNoLivesRemaining() {
     return isLastQuestionOfLastRound() || hasNoLivesRemaining();
@@ -286,14 +314,4 @@ function updateVisuals(showFullProgressQuestion = false) {
     updateQuestionsProgress(saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
     updateRoundNumber();
     atualizarVidas();
-}
-
-function start() {
-    // setTimePerQuestion(ETypeTimePerQuestion.START);
-    updateVisuals()
-    //Se carregou o save finalizado ou sem vida, mostra direto a parte de resultados
-    if (isFinalizedOrHasNoLivesRemaining())
-        showResults()
-    else
-        loadStep()
 }

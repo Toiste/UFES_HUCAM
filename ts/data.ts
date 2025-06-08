@@ -6,10 +6,11 @@ const GrupoD = "Resíduos Comuns";
 const GrupoE = "Resíduos perfurocortantes";
 const Reciclaveis = "Reciclaveis";
 
-export const totalRounds =  3;
-export const questionsPerRound =  2;
+export const totalRounds =  5;
+export const questionsPerRound =  10;
 export const localStorageKeyName = "grrs_progress";
-export const totalLivesPerRound = 30;
+export const localStorageKeyNameReset = "grrs_progress-reset";
+export const totalLivesPerRound = 5;
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},
@@ -98,5 +99,4 @@ export function generateRandomRounds():RoundList{
         roundList.push(round)
     }
     return roundList;
-
 }

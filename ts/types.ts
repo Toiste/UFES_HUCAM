@@ -38,3 +38,12 @@ export type Timespan = {
     totalMinutes:number,
     totalSeconds:number,
 }
+
+export type AfterAnswerConfig = {
+    title:string,
+    imgSrc:string,
+    imgAlt:string,
+    btnText:string|null,
+    btnClass:"success"|"danger"|null,
+    btnFn:any,
+}
