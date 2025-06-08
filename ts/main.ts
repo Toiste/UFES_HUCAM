@@ -1,4 +1,4 @@
-import {deleteSave, loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
+import {loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
     clearRespostaPergunta,
@@ -25,14 +25,14 @@ import {
     startBtnElement,
     startScreen,
     stepContainer,
-    trashNameElement,
+    trashNameElement, updateQuestionsProgress,
     vidas
 } from "./elements";
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
 import {gifTrofeu} from "./assets";
 
-let groupSelected:string|null = null;
+let groupSelected: string | null = null;
 
 let saveObject = {} as Save;
 loadOrGenerateSaveObjectAndStart().then(x => {
@@ -50,17 +50,18 @@ loadOrGenerateSaveObjectAndStart().then(x => {
 
             }, 1000); // Tempo deve ser igual ao da animação (1s)
         });
+        if (window.location.hostname === "localhost") {
+            startBtnElement.click()
+            // showResults()
+        }
     }
 ).catch(e => console.log(e));
 
-function reset() {
-    deleteSave()
-    window.location.reload()
-}
 
 function isFinalizedOrHasNoLivesRemaining() {
     return isLastQuestionOfLastRound() || hasNoLivesRemaining();
 }
+
 function hasNoLivesRemaining() {
     return saveObject.currentRoundLives === 0
 }
@@ -75,7 +76,7 @@ function isLastQuestionOfRound() {
     return saveObject.currentQuestion === lastQuestion
 }
 
-function isLastRound(){
+function isLastRound() {
     const lastRound = saveObject.rounds.length - 1;
     return saveObject.currentRound === lastRound;
 }
@@ -112,23 +113,6 @@ function removerVida() {
 
 
 /*
-* Atualiza as barras de progresso das perguntas do round
-*/
-function updateQuestionsProgress(list: Array<any>, current: number, showFull = false) {
-    if (showFull) {
-        progressElementQuestion.style.width = `100%`;
-        progressElementQuestion.setAttribute("aria-valuenow", `100`);
-        progressElementQuestion.innerText = `100%`;
-        return
-    }
-    const currProgressQuestion = Math.round((100 / list.length) * (current));
-    progressElementQuestion.style.width = `${currProgressQuestion}%`;
-    progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
-    progressElementQuestion.innerText = `${currProgressQuestion}%`;
-
-}
-
-/*
 * Atualiza a visualização do round atual
 */
 function updateRoundNumber() {
@@ -161,7 +145,7 @@ function setTimePerQuestion(
 * Gera as possíveis respostas para ele
 * Adiciona as opções no container de respostas
 * */
-function getNextTrashAndGenerateAnswersOptions(){
+function getNextTrashAndGenerateAnswersOptions() {
     const currentTrash = saveObject.rounds[saveObject.currentRound][saveObject.currentQuestion];
 
     trashNameElement.textContent = `${currentTrash.name}`;
@@ -198,9 +182,9 @@ function loadStep() {
 /*
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
-function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: string) {
+function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: string) {
     console.log("groupSelected before", groupSelected)
-    if(groupSelected !== null) return;
+    if (groupSelected !== null) return;
     const target = event.currentTarget as HTMLElement;
     groupSelected = selectedGroup;
     console.log("groupSelected after", groupSelected)
@@ -208,105 +192,59 @@ function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: strin
 
 
     const correctAnswer = selectedGroup === correctGroup;
-    if(correctAnswer){
-        saveObject.correctAnswers ++;
+    if (correctAnswer) {
+        saveObject.correctAnswers++;
         target.classList.add("correct")
-        if(isLastQuestionOfLastRound())
+        if (isLastQuestionOfLastRound())
             return handleRespostaPergunta(EShowAfterQuestion.GAME_END);
-        if(isLastQuestionOfRound()){
-            updateVisuals(true);
-            roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
-            return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
-        }
         return handleRespostaPergunta(EShowAfterQuestion.CORRECT_ANSWER);
-    }
-    else{
+    } else {
         target.classList.add("incorrect")
         removerVida();
         atualizarVidas()
-        if(hasNoLivesRemaining()){
+        if (hasNoLivesRemaining()) {
             return handleRespostaPergunta(EShowAfterQuestion.NO_MORE_LIVES);
         }
         return handleRespostaPergunta(EShowAfterQuestion.WRONG_ANSWER);
     }
-
-    //
-    // setTimeout(() => {
-    //     //Se ficou sem vida após responder ou se respondeu a última pergunta do último round, mostra os resultados
-    //     if (isFinalizedOrNoLivesRemaining()) {
-    //         return showResults();
-    //     }
-    //     //Se respondeu a última pergunta do round atual, mostra uma animação de round completo para depois mandar para o próximo round
-    //     if (isLastQuestionOfRound()) {
-    //         return showRoundComplete();
-    //     }
-    //     //Vai para a próxima pergunta
-    //     return nextStep()
-    // }, 500)
 }
 
-roundCompleteBtn.addEventListener("click", ()=>{
+roundCompleteBtn.addEventListener("click", () => {
+    stepContainer.style.removeProperty("display");
+    optionsContainer.style.removeProperty("display");
     groupSelected = null;
     nextStep();
     clearRespostaPergunta()
 });
 
-perguntaCorretaBtn.addEventListener("click", function (){
-    groupSelected = null;
-    nextStep();
-    clearRespostaPergunta()
-})
-perguntaErradaBtn.addEventListener("click", function (){
-    groupSelected = null;
-    clearRespostaPergunta()
-})
-
-noMoreLivesResultBtn.addEventListener("click", function (){
-    showResults()
-    clearRespostaPergunta()
-})
-gameEndLivesResultBtn.addEventListener("click", function (){
-    showResults()
-    clearRespostaPergunta()
-})
-
-resetBtn.addEventListener("click", function () {
-    reset()
-});
-resetBtnArrow.addEventListener("click", function () {
-    reset()
-});
-
-//OBS: Apenas para debug
-if (window.location.hostname === "localhost") {
-    startBtnElement.click()
-    // showResults()
-}
-
-function showRoundComplete() {
-    updateVisuals(true);
-
-    stepContainer.style.display = "none";
-    progressContainer.style.display = "none";
-    optionsContainer.style.display = "none";
-
-    // Aguarda um ciclo de renderização antes de mostrar a mensagem
-    setTimeout(() => {
+perguntaCorretaBtn.addEventListener("click", function () {
+    if (isLastQuestionOfRound()) {
+        updateVisuals(true);
         roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
-        roundCompleteContainer.style.display = "flex";
+        stepContainer.style.display = "none";
+        progressContainer.style.display = "none";
+        optionsContainer.style.display = "none";
+        return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
+    }
+    else {
+        groupSelected = null;
+        nextStep();
+        clearRespostaPergunta()
+    }
+})
+perguntaErradaBtn.addEventListener("click", function () {
+    groupSelected = null;
+    clearRespostaPergunta()
+})
 
-        // Depois de 3 segundos, esconde novamente e continua
-        setTimeout(() => {
-            stepContainer.style.removeProperty("display");
-            progressContainer.style.removeProperty("display");
-            optionsContainer.style.removeProperty("display");
-
-            roundCompleteTitle.innerText = "";
-            roundCompleteContainer.style.display = "none";
-            nextStep();
-        }, 3000);
-    }, 0); // ou 50ms se quiser garantir visualmente
-}
+noMoreLivesResultBtn.addEventListener("click", function () {
+    showResults()
+    clearRespostaPergunta()
+})
+gameEndLivesResultBtn.addEventListener("click", function () {
+    showResults()
+    clearRespostaPergunta()
+})
 
 function showResults() {
     saveSave(saveObject)

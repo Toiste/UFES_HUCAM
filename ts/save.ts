@@ -55,4 +55,9 @@ export const saveSave = (saveObj: Save) => {
     window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObj}))
 };
 
-export const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
+const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
+
+export const resetGame = () => {
+    deleteSave()
+    window.location.reload()
+}

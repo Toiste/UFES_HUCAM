@@ -1,3 +1,5 @@
+import {resetGame} from "./save";
+
 export const trashNameElement = getById("trash-name")!;
 export const optionsContainer = getById("options-container")!;
 export const stepContainer = getById("step-container")!;
@@ -115,4 +117,27 @@ function toggleRoundEnd(show:boolean){
 
 function getById(id:string):any{
     return document.getElementById(id)!;
+}
+
+resetBtn.addEventListener("click", function () {
+    resetGame()
+});
+resetBtnArrow.addEventListener("click", function () {
+    resetGame()
+});
+
+/*
+* Atualiza as barras de progresso das perguntas do round
+*/
+export function updateQuestionsProgress(list: Array<any>, current: number, showFull = false) {
+    if (showFull) {
+        progressElementQuestion.style.width = `100%`;
+        progressElementQuestion.setAttribute("aria-valuenow", `100`);
+        progressElementQuestion.innerText = `100%`;
+        return
+    }
+    const currProgressQuestion = Math.round((100 / list.length) * (current));
+    progressElementQuestion.style.width = `${currProgressQuestion}%`;
+    progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
+    progressElementQuestion.innerText = `${currProgressQuestion}%`;
 }
