@@ -1,9 +1,14 @@
 import {deleteSave, loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
-    EShowAfterQuestion, gameEndLivesResultBtn,
-    handleRespostaPergunta, noMoreLivesResultBtn,
-    optionsContainer, perguntaCorretaBtn, perguntaErradaBtn,
+    clearRespostaPergunta,
+    EShowAfterQuestion,
+    gameEndLivesResultBtn,
+    handleRespostaPergunta,
+    noMoreLivesResultBtn,
+    optionsContainer,
+    perguntaCorretaBtn,
+    perguntaErradaBtn,
     progressContainer,
     progressElementQuestion,
     resetBtn,
@@ -13,6 +18,7 @@ import {
     resultScoreElement,
     resultTimeTitle,
     resultTitle,
+    roundCompleteBtn,
     roundCompleteContainer,
     roundCompleteTitle,
     roundCounter,
@@ -25,7 +31,8 @@ import {
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
 import {gifTrofeu} from "./assets";
-let groupSelected:HTMLElement|null = null;
+
+let groupSelected:string|null = null;
 
 let saveObject = {} as Save;
 loadOrGenerateSaveObjectAndStart().then(x => {
@@ -181,6 +188,7 @@ function getNextTrashAndGenerateAnswersOptions(){
 * - Monta as opões e os eventos de resposta
 */
 function loadStep() {
+    groupSelected = null;
     saveSave(saveObject);
     getNextTrashAndGenerateAnswersOptions()
     setTimePerQuestion(ETypeTimePerQuestion.START);
@@ -191,8 +199,11 @@ function loadStep() {
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
 function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: string) {
-    // if(groupSelected) return;
+    console.log("groupSelected before", groupSelected)
+    if(groupSelected !== null) return;
     const target = event.currentTarget as HTMLElement;
+    groupSelected = selectedGroup;
+    console.log("groupSelected after", groupSelected)
     setTimePerQuestion(ETypeTimePerQuestion.END);
 
 
@@ -202,6 +213,11 @@ function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: strin
         target.classList.add("correct")
         if(isLastQuestionOfLastRound())
             return handleRespostaPergunta(EShowAfterQuestion.GAME_END);
+        if(isLastQuestionOfRound()){
+            updateVisuals(true);
+            roundCompleteTitle.innerText = `Round ${saveObject.currentRound + 1} completo!`;
+            return handleRespostaPergunta(EShowAfterQuestion.ROUND_END)
+        }
         return handleRespostaPergunta(EShowAfterQuestion.CORRECT_ANSWER);
     }
     else{
@@ -229,27 +245,30 @@ function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: strin
     // }, 500)
 }
 
-perguntaCorretaBtn.addEventListener("click", function (){
+roundCompleteBtn.addEventListener("click", ()=>{
+    groupSelected = null;
     nextStep();
-    handleRespostaPergunta()
+    clearRespostaPergunta()
+});
+
+perguntaCorretaBtn.addEventListener("click", function (){
+    groupSelected = null;
+    nextStep();
+    clearRespostaPergunta()
 })
 perguntaErradaBtn.addEventListener("click", function (){
-    resetQuestion()
+    groupSelected = null;
+    clearRespostaPergunta()
 })
 
 noMoreLivesResultBtn.addEventListener("click", function (){
     showResults()
-    handleRespostaPergunta()
+    clearRespostaPergunta()
 })
 gameEndLivesResultBtn.addEventListener("click", function (){
     showResults()
-    handleRespostaPergunta()
+    clearRespostaPergunta()
 })
-
-function resetQuestion(){
-    handleRespostaPergunta()
-    setTimeout(()=> groupSelected = null);
-}
 
 resetBtn.addEventListener("click", function () {
     reset()

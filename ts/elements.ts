@@ -10,6 +10,8 @@ export const resultTimeTitle = getById("time-title")!;
 
 export const roundCompleteContainer = getById("round-complete-container")!;
 export const roundCompleteTitle = getById("round-complete-title")!;
+export const roundCompleteBtn = getById("round-complete-btn")!;
+
 
 export const progressElementQuestion = getById("progress-bar-step-question")!;
 // export const progressRoundElement = getById("progress-bar-step-round")!;
@@ -36,19 +38,27 @@ export const noMoreLivesResultBtn = getById("pergunta-respondida-no-more-lives-b
 export const gameEndLivesResultContainer = getById("pergunta-respondida-game-end-container");
 export const gameEndLivesResultBtn = getById("pergunta-respondida-game-end-btn");
 
+
+
 export enum EShowAfterQuestion {
     WRONG_ANSWER,
     CORRECT_ANSWER,
     NO_MORE_LIVES,
-    GAME_END
+    GAME_END,
+    ROUND_END
 }
 
-export function handleRespostaPergunta(option:EShowAfterQuestion|null = null)
-{
+export function clearRespostaPergunta(){
     toggleNoMoreLives(false);
     togglePerguntaCorreta(false);
     togglePerguntaErrada(false);
     toggleGameEnd(false);
+    toggleRoundEnd(false);
+}
+
+export function handleRespostaPergunta(option:EShowAfterQuestion|null = null)
+{
+    clearRespostaPergunta();
     if(option === null) return;
 
     if(option === EShowAfterQuestion.WRONG_ANSWER) {
@@ -65,6 +75,10 @@ export function handleRespostaPergunta(option:EShowAfterQuestion|null = null)
     }
     if(option === EShowAfterQuestion.GAME_END) {
         toggleGameEnd(true);
+        return
+    }
+    if(option === EShowAfterQuestion.ROUND_END) {
+        toggleRoundEnd(true);
         return
     }
 }
@@ -89,6 +103,10 @@ function togglePerguntaErrada(show:boolean){
 function toggleGameEnd(show:boolean){
     if(show) gameEndLivesResultContainer.style.display = "flex";
     else gameEndLivesResultContainer.style.display = "none";
+}
+function toggleRoundEnd(show:boolean){
+    if(show) roundCompleteContainer.style.display = "flex";
+    else roundCompleteContainer.style.display = "none";
 }
 
 
