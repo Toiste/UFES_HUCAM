@@ -37,15 +37,15 @@ export type AfterAnswerConfig = {
     btnFn:any,
 }
 
-export function bbbb(visible:boolean){
+export function toggleAfterAnswerResultVisibility(visible:boolean){
     if(visible)
         afterAnswerClickContainer.style.display = "flex";
     else
         afterAnswerClickContainer.style.display = "none";
 }
 
-export function aaaa (config:AfterAnswerConfig){
-    bbbb(true)
+export function setAfterAnswerResult (config:AfterAnswerConfig){
+    toggleAfterAnswerResultVisibility(true)
     afterAnswerClickButton.onclick = null;
     afterAnswerClickTitle.textContent = config.title;
     afterAnswerClickImg.src = config.imgSrc;
@@ -58,7 +58,7 @@ export function aaaa (config:AfterAnswerConfig){
         afterAnswerClickButton.innerText = config.btnText;
         afterAnswerClickButton.onclick = ()=> {
             config.btnFn();
-            bbbb(false)
+            toggleAfterAnswerResultVisibility(false)
         };
     }
     else{

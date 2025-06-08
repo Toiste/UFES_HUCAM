@@ -1,7 +1,7 @@
 import {loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
-    aaaa, bbbb,
+    setAfterAnswerResult, toggleAfterAnswerResultVisibility,
     EShowAfterQuestion,
     optionsContainer,
     progressContainer,
@@ -202,11 +202,11 @@ function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: str
 }
 
 export function handleRespostaPergunta(option: EShowAfterQuestion | null = null) {
-    bbbb(false)
+    toggleAfterAnswerResultVisibility(false)
     if (option === null) return;
 
     if (option === EShowAfterQuestion.WRONG_ANSWER) {
-        aaaa({
+        setAfterAnswerResult({
             title: "Você errou!",
             imgAlt: "Mão segurando placa de errado",
             imgSrc: "assets/images/icones/wrong-decision.gif",
@@ -219,7 +219,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.CORRECT_ANSWER) {
-        aaaa({
+        setAfterAnswerResult({
             title: "Você acertou!",
             imgAlt: "Joinha com um simbolo de correto",
             imgSrc: "assets/images/icones/like.gif",
@@ -233,7 +233,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.NO_MORE_LIVES) {
-        aaaa({
+        setAfterAnswerResult({
             title: "Suas vidas acabaram!",
             imgAlt: "Mão segurando placa de errado",
             imgSrc: "assets/images/icones/warning.gif",
@@ -246,7 +246,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.GAME_END) {
-        aaaa({
+        setAfterAnswerResult({
             title: "Você chegou ao final!",
             imgAlt: "Confetti",
             imgSrc: "assets/images/icones/confetti.gif",
@@ -259,7 +259,8 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.ROUND_END) {
-        aaaa({
+        updateVisuals(true);
+        setAfterAnswerResult({
             title: `Round ${saveObject.currentRound + 1} completo!`,
             imgAlt: "Check",
             imgSrc: "assets/images/icones/verificar2.gif",
