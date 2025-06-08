@@ -9,7 +9,7 @@ const Reciclaveis = "Reciclaveis";
 export const totalRounds =  10;
 export const questionsPerRound =  5;
 export const localStorageKeyName = "grrs_progress";
-export const totalLivesPerRound = 3;
+export const totalLivesPerRound = 30;
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},

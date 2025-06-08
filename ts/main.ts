@@ -1,7 +1,9 @@
 import {deleteSave, loadOrGenerateSaveObjectAndStart, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
-    optionsContainer,
+    EShowAfterQuestion, gameEndLivesResultBtn,
+    handleRespostaPergunta, noMoreLivesResultBtn,
+    optionsContainer, perguntaCorretaBtn, perguntaErradaBtn,
     progressContainer,
     progressElementQuestion,
     resetBtn,
@@ -23,6 +25,7 @@ import {
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
 import {gifTrofeu} from "./assets";
+let groupSelected:HTMLElement|null = null;
 
 let saveObject = {} as Save;
 loadOrGenerateSaveObjectAndStart().then(x => {
@@ -30,7 +33,7 @@ loadOrGenerateSaveObjectAndStart().then(x => {
         startBtnElement.addEventListener("click", function () {
             startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
             //Se o save foi carregado finalizado, não mostrar ao carregar
-            if (isFinalizedOrNoLivesRemaining()) return;
+            if (isFinalizedOrHasNoLivesRemaining()) return;
             start()
             setTimeout(() => {
                 startScreen.style.display = "none"; // Remove a tela depois da animação
@@ -48,12 +51,15 @@ function reset() {
     window.location.reload()
 }
 
-function isFinalizedOrNoLivesRemaining() {
-    return isLastQuestionOfLastRound() || saveObject.currentRoundLives === 0
+function isFinalizedOrHasNoLivesRemaining() {
+    return isLastQuestionOfLastRound() || hasNoLivesRemaining();
+}
+function hasNoLivesRemaining() {
+    return saveObject.currentRoundLives === 0
 }
 
 /*
-* Verifica se a a resposta dada era a última do round
+* Verifica se a resposta dada era a última do round
 */
 function isLastQuestionOfRound() {
     const round = saveObject.rounds[saveObject.currentRound];
@@ -62,12 +68,16 @@ function isLastQuestionOfRound() {
     return saveObject.currentQuestion === lastQuestion
 }
 
+function isLastRound(){
+    const lastRound = saveObject.rounds.length - 1;
+    return saveObject.currentRound === lastRound;
+}
+
 /*
-* Verifica se a a resposta dada era a última do ultimo round
+* Verifica se a resposta dada era a última do ultimo round
 */
 function isLastQuestionOfLastRound() {
-    const lastRound = saveObject.rounds.length - 1;
-    return isLastQuestionOfRound() && saveObject.currentRound === lastRound;
+    return isLastQuestionOfRound() && isLastRound();
 }
 
 /*
@@ -80,7 +90,7 @@ function updateCurrentRoundAndQuestion() {
         saveObject.currentRoundLives = totalLivesPerRound;
         return;
     }
-    //If its not the end of the round, goes to the next question
+    //If it's not the end of the round, goes to the next question
     saveObject.currentQuestion++;
 }
 
@@ -95,27 +105,20 @@ function removerVida() {
 
 
 /*
-* Atualiza as barras de progresso a partir do elemento
+* Atualiza as barras de progresso das perguntas do round
 */
-function updateProgressOfElement(element: HTMLElement, list: Array<any>, current: number, showFull = false) {
+function updateQuestionsProgress(list: Array<any>, current: number, showFull = false) {
     if (showFull) {
-        element.style.width = `100%`;
-        element.setAttribute("aria-valuenow", `100`);
-        element.innerText = `100%`;
+        progressElementQuestion.style.width = `100%`;
+        progressElementQuestion.setAttribute("aria-valuenow", `100`);
+        progressElementQuestion.innerText = `100%`;
         return
     }
     const currProgressQuestion = Math.round((100 / list.length) * (current));
-    element.style.width = `${currProgressQuestion}%`;
-    element.setAttribute("aria-valuenow", `${currProgressQuestion}`);
-    element.innerText = `${currProgressQuestion}%`;
+    progressElementQuestion.style.width = `${currProgressQuestion}%`;
+    progressElementQuestion.setAttribute("aria-valuenow", `${currProgressQuestion}`);
+    progressElementQuestion.innerText = `${currProgressQuestion}%`;
 
-}
-
-/*
-* Atualiza as barras de progresso de pergunta e round
-*/
-function updateRoundProgress(showFullProgressQuestion = false) {
-    updateProgressOfElement(progressElementQuestion, saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
 }
 
 /*
@@ -135,33 +138,23 @@ function atualizarVidas() {
 function setTimePerQuestion(
     type: ETypeTimePerQuestion,
 ) {
-    // if(!saveObject.timePerQuestion) saveObject.timePerQuestion = {};
     const key = `${saveObject.currentRound}-${saveObject.currentQuestion}`;
-    if (type === ETypeTimePerQuestion.START
-        && Object.keys(saveObject.timePerQuestion).includes(key)
-    )
-        return;
-
-
     const getUTCMillisecondsNow = () => new Date().getTime();
     if (type === ETypeTimePerQuestion.END) {
         saveObject.timePerQuestion[key][1] = getUTCMillisecondsNow();
-        // saveObject.timePerQuestion.set(key, [curr[0], ]);
         return;
-
     }
     saveObject.timePerQuestion[key] = [getUTCMillisecondsNow(), 0];
-
 }
 
+
 /*
-* Carrega cada passo de pergunta:
-* - Salva o progresso até o momento
-* - Pega a próxima pergunta
-* - Monta as opões e os eventos de resposta
-*/
-function loadStep() {
-    saveSave(saveObject);
+* Pega o lixo/resíduo que deve ser categorizado
+* Limpa as opções no container de respostas
+* Gera as possíveis respostas para ele
+* Adiciona as opções no container de respostas
+* */
+function getNextTrashAndGenerateAnswersOptions(){
     const currentTrash = saveObject.rounds[saveObject.currentRound][saveObject.currentQuestion];
 
     trashNameElement.textContent = `${currentTrash.name}`;
@@ -176,11 +169,20 @@ function loadStep() {
             <img src="assets/images/${group.image}" alt="${group.name}">
             <p>${group.name}</p>
         `;
-        card.addEventListener("click", () => selectGroup(group.name, currentTrash.group));
+        card.addEventListener("click", (event) => selectGroup(event, group.name, currentTrash.group), {once: true});
         optionsContainer.appendChild(card);
     });
+}
 
-    // saveObject.timePerQuestion[saveObject.currentRound][saveObject.currentQuestion][0] = new Date();
+/*
+* Carrega cada passo de pergunta:
+* - Salva o progresso até o momento
+* - Pega a próxima pergunta
+* - Monta as opões e os eventos de resposta
+*/
+function loadStep() {
+    saveSave(saveObject);
+    getNextTrashAndGenerateAnswersOptions()
     setTimePerQuestion(ETypeTimePerQuestion.START);
 
 }
@@ -188,40 +190,66 @@ function loadStep() {
 /*
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
-function selectGroup(selectedGroup: string, correctGroup: string) {
+function selectGroup(event:MouseEvent,selectedGroup: string, correctGroup: string) {
+    // if(groupSelected) return;
+    const target = event.currentTarget as HTMLElement;
     setTimePerQuestion(ETypeTimePerQuestion.END);
-    const cards = optionsContainer.querySelectorAll(".option-card");
-    cards.forEach((card: any) => {
-        card.style.pointerEvents = "none"; // Bloqueia cliques adicionais
-        const groupName = card.querySelector("p").textContent;
 
-        if (groupName === correctGroup) {
-            card.classList.add("correct"); // Adiciona classe de acerto
-        } else if (groupName === selectedGroup) {
-            card.classList.add("incorrect"); // Adiciona classe de erro
+
+    const correctAnswer = selectedGroup === correctGroup;
+    if(correctAnswer){
+        saveObject.correctAnswers ++;
+        target.classList.add("correct")
+        if(isLastQuestionOfLastRound())
+            return handleRespostaPergunta(EShowAfterQuestion.GAME_END);
+        return handleRespostaPergunta(EShowAfterQuestion.CORRECT_ANSWER);
+    }
+    else{
+        target.classList.add("incorrect")
+        removerVida();
+        atualizarVidas()
+        if(hasNoLivesRemaining()){
+            return handleRespostaPergunta(EShowAfterQuestion.NO_MORE_LIVES);
         }
-    });
-
-    if (selectedGroup === correctGroup) {
-        saveObject.correctAnswers++;
-    } else {
-        removerVida()
+        return handleRespostaPergunta(EShowAfterQuestion.WRONG_ANSWER);
     }
 
-    setTimeout(() => {
-        //Se ficou sem vida após responder ou se respondeu a última pergunta do último round, mostra os resultados
-        if (isFinalizedOrNoLivesRemaining()) {
-            return showResults();
-        }
-        //Se respondeu a última pergunta do round atual, mostra uma animação de round completo para depois mandar para o próximo round
-        if (isLastQuestionOfRound()) {
-            return showRoundComplete();
-        }
-        //Vai para a próxima pergunta
-        return nextStep()
-    }, 500)
+    //
+    // setTimeout(() => {
+    //     //Se ficou sem vida após responder ou se respondeu a última pergunta do último round, mostra os resultados
+    //     if (isFinalizedOrNoLivesRemaining()) {
+    //         return showResults();
+    //     }
+    //     //Se respondeu a última pergunta do round atual, mostra uma animação de round completo para depois mandar para o próximo round
+    //     if (isLastQuestionOfRound()) {
+    //         return showRoundComplete();
+    //     }
+    //     //Vai para a próxima pergunta
+    //     return nextStep()
+    // }, 500)
 }
 
+perguntaCorretaBtn.addEventListener("click", function (){
+    nextStep();
+    handleRespostaPergunta()
+})
+perguntaErradaBtn.addEventListener("click", function (){
+    resetQuestion()
+})
+
+noMoreLivesResultBtn.addEventListener("click", function (){
+    showResults()
+    handleRespostaPergunta()
+})
+gameEndLivesResultBtn.addEventListener("click", function (){
+    showResults()
+    handleRespostaPergunta()
+})
+
+function resetQuestion(){
+    handleRespostaPergunta()
+    setTimeout(()=> groupSelected = null);
+}
 
 resetBtn.addEventListener("click", function () {
     reset()
@@ -318,16 +346,16 @@ function nextStep() {
 }
 
 function updateVisuals(showFullProgressQuestion = false) {
-    updateRoundProgress(showFullProgressQuestion);
+    updateQuestionsProgress(saveObject.rounds[saveObject.currentRound], saveObject.currentQuestion, showFullProgressQuestion);
     updateRoundNumber();
     atualizarVidas();
 }
 
 function start() {
-    setTimePerQuestion(ETypeTimePerQuestion.START);
+    // setTimePerQuestion(ETypeTimePerQuestion.START);
     updateVisuals()
     //Se carregou o save finalizado ou sem vida, mostra direto a parte de resultados
-    if (isFinalizedOrNoLivesRemaining())
+    if (isFinalizedOrHasNoLivesRemaining())
         showResults()
     else
         loadStep()

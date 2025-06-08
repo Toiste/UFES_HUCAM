@@ -2,7 +2,7 @@ import {TimesPerQuestionDict} from "./types";
 
 export function getTotalMsTimeAllQuestions(dict: TimesPerQuestionDict) {
     let totalMsAllQuestion = 0;
-    debugger;
+
     const keysRounds: string[] = Object.keys(dict);
 
     keysRounds.forEach((kr: string) => {

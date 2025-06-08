@@ -48,12 +48,6 @@
 <!-- Main Game Area -->
 <div class="">
     <div id="step-counter-container" class=" d-flex align-items-center mb-2 mt-2">
-<!--        <div id="question-counter" style="display: none">-->
-
-<!--        </div>-->
-<!--        <div class="progress" style="width: 100%; height: 20px; border-radius: 10px; margin-left: 20px;">-->
-<!--            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step-round" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>-->
-<!--        </div>-->
         <div class="progress" style="width: 100%; height: 20px; border-radius: 10px;">
             <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step-question" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
@@ -74,17 +68,35 @@
                             <p id="trash-name" class="trash-text"></p>
                         </div>
                     </div>
-                
                 </div>
-
-                  
             </div>
-            
-            
         </div>
-
-
     </div>
+
+    <div id="pergunta-respondida-sucesso-container" class="sucesso" style="display: none; margin-bottom: 20px;">
+        <h2>Você acertou!</h2>
+        <img alt="Joinha com um simbolo de correto" src="assets/images/icones/like.gif" style="width: 100px;">
+        <button class="btn btn-md btn-success" id="next-question-button" >Próxima pergunta</button>
+    </div>
+
+    <div id="pergunta-respondida-erro-container" class="sucesso" style="display: none; margin-bottom: 20px;">
+        <h2>Você errou!</h2>
+        <img alt="Mão segurando placa de errado" src="assets/images/icones/wrong-decision.gif" style="width: 100px;">
+        <button class="btn btn-md btn-danger" id="try-again-question-button" >Tentar novamente</button>
+    </div>
+
+    <div id="pergunta-respondida-no-more-lives-container" class="sucesso" style="display: none; margin-bottom: 20px;">
+        <h2>Suas vidas acabaram!</h2>
+        <img alt="Mão segurando placa de errado" src="assets/images/icones/warning.gif" style="width: 100px;">
+        <button class="btn btn-md btn-danger" id="pergunta-respondida-no-more-lives-btn" >Mostrar resultados</button>
+    </div>
+
+    <div id="pergunta-respondida-game-end-container" class="sucesso" style="display: none; margin-bottom: 20px;">
+        <h2>Você chegou ao final!</h2>
+        <img alt="Mão segurando placa de errado" src="assets/images/icones/confetti.gif" style="width: 100px;">
+        <button class="btn btn-md btn-danger" id="pergunta-respondida-game-end-btn" >Mostrar resultados</button>
+    </div>
+
 
     <div id="round-complete-container" class="sucesso" style="display: none;">
         <h2 id="round-complete-title">Round 1 completo!</h2>

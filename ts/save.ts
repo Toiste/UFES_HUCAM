@@ -37,13 +37,14 @@ function loadSave(): Save | null {
 export const loadOrGenerateSaveObjectAndStart = async (): Promise<Save> => {
     return new Promise((resolve, reject) => {
         try {
+            return resolve(createSave()!)
             const loaded = loadSave();
-            if (loaded !== null) return resolve(loaded);
+            if (loaded !== null) return resolve(loaded!);
             let created = createSave();
             while (created === null) {
                 created = createSave()
             }
-            return resolve(created);
+            return resolve(created!);
         } catch (e) {
             throw e;
         }
