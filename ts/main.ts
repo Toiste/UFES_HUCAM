@@ -183,11 +183,9 @@ function loadStep() {
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
 function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: string) {
-    console.log("groupSelected before", groupSelected)
     if (groupSelected !== null) return;
     const target = event.currentTarget as HTMLElement;
     groupSelected = selectedGroup;
-    console.log("groupSelected after", groupSelected)
     setTimePerQuestion(ETypeTimePerQuestion.END);
 
 
@@ -238,12 +236,12 @@ perguntaErradaBtn.addEventListener("click", function () {
 })
 
 noMoreLivesResultBtn.addEventListener("click", function () {
-    showResults()
     clearRespostaPergunta()
+    showResults()
 })
 gameEndLivesResultBtn.addEventListener("click", function () {
-    showResults()
     clearRespostaPergunta()
+    showResults()
 })
 
 function showResults() {
