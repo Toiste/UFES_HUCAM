@@ -1,7 +1,22 @@
-import {generateRandomRounds, localStorageKeyName, localStorageKeyNameReset, totalLivesPerRound} from "./data";
+import {generateRandomRounds, totalLivesPerRound} from "./data";
 import {Save} from "./types";
 
+declare var CryptoJS:any;
+
+export const localStorageKeyName = "grrs_progress";
+export const localStorageKeyNameK = "grrs_progressk";
+export const localStorageKeyNameReset = "grrs_progress-reset";
 export const saveCreatedOrLoadedEvent = "saveCreatedOrLoaded";
+function generateOrGet(){
+    const k = window.localStorage.getItem(localStorageKeyNameK);
+    if(k === null) {
+        const randomWordArray = CryptoJS.lib.WordArray.random(16);
+        const randomHexString = randomWordArray.toString();
+        window.localStorage.setItem(localStorageKeyNameK,randomHexString);
+        return randomHexString;
+    }
+    return k;
+}
 
 function createSave(): Save | null {
     try {
@@ -28,7 +43,14 @@ function loadSave(): Save | null {
         return null;
     }
     try {
-        return JSON.parse(item) as Save;
+        try{
+            CryptoJS.AES.decrypt(item, generateOrGet());
+        }
+        catch (e) {
+            return null;
+        }
+        const d = CryptoJS.AES.decrypt(item, generateOrGet());
+        return JSON.parse(d.toString(CryptoJS.enc.Utf8)) as Save;
     } catch (e) {
         console.log("error parsing");
         console.log(e);
@@ -44,10 +66,26 @@ function createEvent(save: Save): CustomEvent<Save> {
     });
 }
 
+export const saveSave = (saveObj: Save) => {
+    const e = CryptoJS.AES.encrypt(
+        JSON.stringify({...saveObj}),
+        generateOrGet()
+    ).toString();
+    window.localStorage.setItem(localStorageKeyName, e);
+};
+
+const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
+
+export const resetGame = () => {
+    deleteSave()
+    window.localStorage.setItem(localStorageKeyNameReset,"true");
+    window.location.reload()
+}
+
+
 export const loadOrGenerateSaveObjectAndStartEvent = (): void => {
     try {
         const loaded = loadSave();
-        // console.log("loaded", loaded);
         if (loaded !== null) {
             // console.log("despachou")
             document.dispatchEvent(createEvent(loaded));
@@ -73,31 +111,3 @@ export const loadOrGenerateSaveObjectAndStartEvent = (): void => {
     }
 
 };
-
-export const loadOrGenerateSaveObjectAndStart = async (): Promise<Save> => {
-    return new Promise((resolve, reject) => {
-        try {
-            const loaded = loadSave();
-            if (loaded !== null) return resolve(loaded!);
-            let created = createSave();
-            while (created === null) {
-                created = createSave()
-            }
-            return resolve(created!);
-        } catch (e) {
-            throw e;
-        }
-    })
-};
-
-export const saveSave = (saveObj: Save) => {
-    window.localStorage.setItem(localStorageKeyName, JSON.stringify({...saveObj}))
-};
-
-const deleteSave = () => window.localStorage.removeItem(localStorageKeyName);
-
-export const resetGame = () => {
-    deleteSave()
-    window.localStorage.setItem(localStorageKeyNameReset,"true");
-    window.location.reload()
-}
