@@ -47,14 +47,14 @@ function createEvent(save: Save): CustomEvent<Save> {
 export const loadOrGenerateSaveObjectAndStartEvent = (): void => {
     try {
         const loaded = loadSave();
-        console.log("loaded", loaded);
+        // console.log("loaded", loaded);
         if (loaded !== null) {
-            console.log("despachou")
+            // console.log("despachou")
             document.dispatchEvent(createEvent(loaded));
             return;
         }
         let created = createSave();
-        console.log("created", created);
+        // console.log("created", created);
         if (created === null) {
             let intervalId = setInterval(() => {
                 created = createSave();

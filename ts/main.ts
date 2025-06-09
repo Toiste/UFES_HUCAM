@@ -18,6 +18,7 @@ import {
 } from "./elements";
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
+import {gifCheckMark, gifConfetti, gifLike, gifWarning, gifWrongDecision} from "./assets";
 let dots = 0;
 
 let groupSelected: string | null = null;
@@ -31,7 +32,7 @@ let dotsInterval = setInterval(()=> {
 document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener(saveCreatedOrLoadedEvent, (e) => {
         saveObject = (e as CustomEvent<Save>).detail;
-        console.log("saveObject",saveObject)
+        // console.log("saveObject",saveObject)
         clearInterval(dotsInterval);
         startBtnElement.textContent = "Começar";
         startBtnElement.className = "start-button";
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         });
         if (window.location.hostname === "localhost" || window.localStorage.getItem(localStorageKeyNameReset) !== null) {
-            console.log("aaaa")
+            // console.log("aaaa")
             startBtnElement.click()
             window.localStorage.removeItem(localStorageKeyNameReset);
             // showResults()
@@ -69,7 +70,9 @@ function start() {
         loadStep()
 }
 
-function isFinalizedOrHasNoLivesRemaining() {
+function isFinalizedOrHasNoLivesRemaining()
+{
+    // console.log("isLastQuestionOfLastRound() || hasNoLivesRemaining()", isLastQuestionOfLastRound() || hasNoLivesRemaining())
     return isLastQuestionOfLastRound() || hasNoLivesRemaining();
 }
 
@@ -194,11 +197,11 @@ function loadStep() {
 * Verifica se o grupo selecionado foi correto ou não. Caso não, remove uma vida. Caso sim, adiciona na qtd de respostas corretas
 */
 function selectGroup(event: MouseEvent, selectedGroup: string, correctGroup: string) {
-    console.log("groupSelected before", groupSelected);
+    // console.log("groupSelected before", groupSelected);
     if (groupSelected !== null) return;
     const target = event.currentTarget as HTMLElement;
     groupSelected = selectedGroup;
-    console.log("groupSelected after", groupSelected);
+    // console.log("groupSelected after", groupSelected);
     setTimePerQuestion(ETypeTimePerQuestion.END);
 
 
@@ -230,8 +233,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
     if (option === EShowAfterQuestion.WRONG_ANSWER) {
         setAfterAnswerResult({
             title: "Você errou!",
-            imgAlt: "Mão segurando placa de errado",
-            imgSrc: "assets/images/icones/wrong-decision.gif",
+            img: gifWrongDecision,
             btnClass: "danger",
             btnText: "Tentar novamente",
             btnFn: () => {
@@ -243,8 +245,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
     if (option === EShowAfterQuestion.CORRECT_ANSWER) {
         setAfterAnswerResult({
             title: "Você acertou!",
-            imgAlt: "Joinha com um simbolo de correto",
-            imgSrc: "assets/images/icones/like.gif",
+            img: gifLike,
             btnClass: "success",
             btnText: "Próxima pergunta",
             btnFn: () => {
@@ -257,8 +258,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
     if (option === EShowAfterQuestion.NO_MORE_LIVES) {
         setAfterAnswerResult({
             title: "Suas vidas acabaram!",
-            imgAlt: "Mão segurando placa de errado",
-            imgSrc: "assets/images/icones/warning.gif",
+            img: gifWarning,
             btnClass: "danger",
             btnText: "Mostrar resultados",
             btnFn: () => {
@@ -270,8 +270,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
     if (option === EShowAfterQuestion.GAME_END) {
         setAfterAnswerResult({
             title: "Você chegou ao final!",
-            imgAlt: "Confetti",
-            imgSrc: "assets/images/icones/confetti.gif",
+            img: gifConfetti,
             btnClass: "success",
             btnText: "Mostrar resultados",
             btnFn: () => {
@@ -284,8 +283,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         updateVisuals(true);
         setAfterAnswerResult({
             title: `Round ${saveObject.currentRound + 1} completo!`,
-            imgAlt: "Check",
-            imgSrc: "assets/images/icones/verificar2.gif",
+            img: gifCheckMark,
             btnClass: "success",
             btnText: "Próximo round",
             btnFn: () => {

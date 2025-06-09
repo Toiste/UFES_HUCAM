@@ -10,7 +10,7 @@ export const totalRounds =  5;
 export const questionsPerRound =  10;
 export const localStorageKeyName = "grrs_progress";
 export const localStorageKeyNameReset = "grrs_progress-reset";
-export const totalLivesPerRound = 5;
+export const totalLivesPerRound = 4;
 
 export const trashListOrig = [
     {name: "ALGODÃO COM SANGUE", group: GrupoA, hideGroups: []},
@@ -85,7 +85,7 @@ export function generateRandomRounds():RoundList{
     for (let r = 0; r < totalRounds; r++){
         const round:Array<Question> = []
         for (let q = 0; q < questionsPerRound; q++){
-            //If the list doesnt have more questions, return the current round list
+            //If the list doesn't have more questions, return the current round list
             if(trashList.length === 0) {
                 //If the round has any questions, adds the current round before returning
                 if(round.length !== 0) roundList.push(round)

@@ -40,10 +40,11 @@ export type Timespan = {
 }
 
 export type AfterAnswerConfig = {
-    title:string,
-    imgSrc:string,
-    imgAlt:string,
-    btnText:string|null,
-    btnClass:"success"|"danger"|null,
-    btnFn:any,
+    title: string,
+    img:ImgAsset,
+    btnText: string | null,
+    btnClass: "success" | "danger" | null,
+    btnFn: any,
+
 }
+export type ImgAsset = {src: string, alt: string}

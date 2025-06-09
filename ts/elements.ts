@@ -1,6 +1,6 @@
 import {resetGame} from "./save";
-import {AfterAnswerConfig, Timespan} from "./types";
-import {gifTrofeu} from "./assets";
+import {AfterAnswerConfig, ImgAsset, Timespan} from "./types";
+import {gifNotAllAnswers, gifSad, gifTrofeu} from "./assets";
 
 export const trashNameElement = getById("trash-name")!;
 export const optionsContainer = getById("options-container")!;
@@ -41,8 +41,8 @@ export function setAfterAnswerResult (config:AfterAnswerConfig){
     toggleAfterAnswerResultVisibility(true)
     afterAnswerClickButton.onclick = null;
     afterAnswerClickTitle.textContent = config.title;
-    afterAnswerClickImg.src = config.imgSrc;
-    afterAnswerClickImg.alt = config.imgAlt;
+    afterAnswerClickImg.src = config.img.src;
+    afterAnswerClickImg.alt = config.img.alt;
     if(config.btnText !== null){
         afterAnswerClickButton.classList.remove("btn-danger");
         afterAnswerClickButton.classList.remove("btn-success");
@@ -127,19 +127,42 @@ export function setResultAfterEnd(correctAnswers:number,totalQuestions:number){
     resultContainer.style.display = "flex";
 
     if (correctAnswers === totalQuestions) {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResultElement({
+            title:"Parabéns!!",
+            text:`Você acertou todas as ${totalQuestions} questões!`,
+            img:gifTrofeu
+        })
+        // resultTitle.textContent = "Parabéns!!";
+        // resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
+        // resultImg.src = gifTrofeu.src;
+        // resultImg.alt = gifTrofeu.alt;
     } else if (correctAnswers === 0) {
-        resultTitle.textContent = "Não foi dessa vez!";
-        resultScoreElement.textContent = `Você não acertou nenhuma questão!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResultElement({
+            title:"Não foi dessa vez!",
+            text:`Você não acertou nenhuma questão, tente novamente!`,
+            img:gifSad
+        })
+        // resultTitle.textContent = "Não foi dessa vez!";
+        // resultScoreElement.textContent = `Você não acertou nenhuma questão, tente novamente!`;
+        // resultImg.src = gifSad.src;
+        // resultImg.alt = gifSad.alt;
     } else {
-        resultTitle.textContent = "Parabéns!!";
-        resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões!`;
-        resultImg.src = gifTrofeu.src;
-        resultImg.alt = gifTrofeu.alt;
+        setResultElement({
+            title:"Quase lá!!",
+            text:`Você acertou ${correctAnswers} de ${totalQuestions} questões! Continue assim!`,
+            img:gifNotAllAnswers
+        })
+        // resultTitle.textContent = "Quase lá!!";
+        // resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões! Continue assim!`;
+        // resultImg.src = gifNotAllAnswers.src;
+        // resultImg.alt = gifNotAllAnswers.alt;
     }
 }
+
+function setResultElement(config:{title:string, text:string, img:ImgAsset}){
+    resultTitle.textContent = config.title;
+    resultScoreElement.textContent = config.text;
+    resultImg.src = config.img.src;
+    resultImg.alt = config.img.alt;
+}
+
