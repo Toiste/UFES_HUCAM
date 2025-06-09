@@ -1,9 +1,9 @@
 import {
-    loadOrGenerateSaveObjectAndStartEvent,
+    loadOrGenerateSaveObjectAndStartEvent, localStorageKeyNameReset,
     saveCreatedOrLoadedEvent,
     saveSave
 } from "./save";
-import {answerOptions, localStorageKeyNameReset, totalLivesPerRound} from "./data";
+import {answerOptions, totalLivesPerRound} from "./data";
 import {
     setAfterAnswerResult, toggleAfterAnswerResultVisibility,
     EShowAfterQuestion,
