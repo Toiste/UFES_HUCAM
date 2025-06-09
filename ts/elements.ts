@@ -132,30 +132,18 @@ export function setResultAfterEnd(correctAnswers:number,totalQuestions:number){
             text:`Você acertou todas as ${totalQuestions} questões!`,
             img:gifTrofeu
         })
-        // resultTitle.textContent = "Parabéns!!";
-        // resultScoreElement.textContent = `Você acertou todas as ${totalQuestions} questões!`;
-        // resultImg.src = gifTrofeu.src;
-        // resultImg.alt = gifTrofeu.alt;
     } else if (correctAnswers === 0) {
         setResultElement({
             title:"Não foi dessa vez!",
             text:`Você não acertou nenhuma questão, tente novamente!`,
             img:gifSad
         })
-        // resultTitle.textContent = "Não foi dessa vez!";
-        // resultScoreElement.textContent = `Você não acertou nenhuma questão, tente novamente!`;
-        // resultImg.src = gifSad.src;
-        // resultImg.alt = gifSad.alt;
     } else {
         setResultElement({
             title:"Quase lá!!",
             text:`Você acertou ${correctAnswers} de ${totalQuestions} questões! Continue assim!`,
             img:gifNotAllAnswers
         })
-        // resultTitle.textContent = "Quase lá!!";
-        // resultScoreElement.textContent = `Você acertou ${correctAnswers} de ${totalQuestions} questões! Continue assim!`;
-        // resultImg.src = gifNotAllAnswers.src;
-        // resultImg.alt = gifNotAllAnswers.alt;
     }
 }
 

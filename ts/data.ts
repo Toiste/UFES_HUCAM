@@ -6,8 +6,8 @@ const GrupoD = "Resíduos Comuns";
 const GrupoE = "Resíduos perfurocortantes";
 const Reciclaveis = "Reciclaveis";
 
-export const totalRounds =  5;
-export const questionsPerRound =  10;
+export const totalRounds =  10;
+export const questionsPerRound =  5;
 export const localStorageKeyName = "grrs_progress";
 export const localStorageKeyNameReset = "grrs_progress-reset";
 export const totalLivesPerRound = 4;
