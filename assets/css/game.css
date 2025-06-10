@@ -180,10 +180,34 @@ footer a:hover {
 }
 
 .sucesso{
-    margin-top: 80px;
+    position: absolute;
+    background-color: white;
+    border-top: black 1px solid;
+    bottom: 0;
+    left: 0;
+    height: 0;
+    width: 100vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition: ease-in 0.3s;
+    margin: 0;
+    padding: 0;
+}
+
+.resultado{
+    position: absolute;
+    background-color: white;
+    top: 40vh;
+    left: 0;
+    height: 0;
+    width: 100vw;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: ease-in 0.3s;
+    margin: 0;
+    padding: 0;
 }
 
 .trash-text{

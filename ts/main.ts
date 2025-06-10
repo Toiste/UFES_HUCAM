@@ -256,6 +256,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.NO_MORE_LIVES) {
+        
         setAfterAnswerResult({
             title: "Suas vidas acabaram!",
             img: gifWarning,

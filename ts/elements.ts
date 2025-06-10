@@ -31,10 +31,13 @@ export const afterAnswerClickButton = getById("after-answer-click-button") as HT
 
 
 export function toggleAfterAnswerResultVisibility(visible:boolean){
-    if(visible)
+    if(visible){
+        afterAnswerClickContainer.style.height = '150px';
         afterAnswerClickContainer.style.display = "flex";
-    else
+    }else{
+        afterAnswerClickContainer.style.height = '0px';
         afterAnswerClickContainer.style.display = "none";
+    }
 }
 
 export function setAfterAnswerResult (config:AfterAnswerConfig){
@@ -125,6 +128,7 @@ export function setResultAfterEnd(correctAnswers:number,totalQuestions:number){
     progressContainer.style.display = "none";
     optionsContainer.style.display = "none"
     resultContainer.style.display = "flex";
+    
 
     if (correctAnswers === totalQuestions) {
         setResultElement({
