@@ -42,22 +42,15 @@
     <img src="assets/images/icones/hospital.png" alt="Imagem de introdução" class="start-image">
     <h2>Bem-vindo ao GRSS<br>Gerenciamento de Resíduo de Serviços de Saúde!</h2>
     <p>Aprenda a descartar o lixo corretamente!</p>
-    <button id="start-button" class="start-button">Começar</button>
+    <button id="start-button"  class="start-button">Carregando</button>
 </div>
 
 <!-- Main Game Area -->
 <div class="">
     <div id="step-counter-container" class=" d-flex align-items-center mb-2 mt-2">
-<!--        <div id="question-counter" style="display: none">-->
-
-<!--        </div>-->
-<!--        <div class="progress" style="width: 100%; height: 20px; border-radius: 10px; margin-left: 20px;">-->
-<!--            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step-round" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>-->
-<!--        </div>-->
         <div class="progress" style="width: 100%; height: 20px; border-radius: 10px;">
             <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar-step-question" role="progressbar" style="width: 0%; background-color: #9DD745;" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-
         <div  id="vidas">
             <span  style="font-size: 25px;transform: scale(.5,1)"></span>
         </div>
@@ -74,21 +67,15 @@
                             <p id="trash-name" class="trash-text"></p>
                         </div>
                     </div>
-                
                 </div>
-
-                  
             </div>
-            
-            
         </div>
-
-
     </div>
 
-    <div id="round-complete-container" class="sucesso" style="display: none;">
-        <h2 id="round-complete-title">Round 1 completo!</h2>
-        <img id="round-complete-img" src="assets/images/icones/verificar2.gif" style="width: 100px;">
+    <div id="after-answer-click-container" class="sucesso" style="display: none; margin-bottom: 20px;">
+        <h2 id="after-answer-click-title"></h2>
+        <img id="after-answer-click-img"  style="width: 100px;">
+        <button class="btn btn-md btn-success" id="after-answer-click-button" ></button>
     </div>
 
     <div id="result-container" class="sucesso" style="display: none;">
@@ -113,6 +100,7 @@
 <!-- Bootstrap 4 JS and dependencies -->
 <script src="js/vendors/jquery-3.6.0.min.js"></script>
 <script src="js/vendors/bootstrap.bundle.min.js"></script>
-<script type="module" src="js/script_game.js"></script>
+<script src="js/vendors/crypto-js.min.js"></script>
+<script type="module" src="js/dist/bundle.js"></script>
 </body>
 </html>

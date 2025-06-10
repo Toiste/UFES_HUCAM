@@ -16,9 +16,6 @@ const resultImg = document.getElementById("result-img");
 const resultScoreElement = document.getElementById("result-score");
 const resultTimeTitle = document.getElementById("time-title");
 
-const roundCompleteContainer = document.getElementById("round-complete-container");
-const roundCompleteTitle = document.getElementById("round-complete-title");
-
 const progressElementQuestion = document.getElementById("progress-bar-step-question");
 // const progressRoundElement = document.getElementById("progress-bar-step-round");
 const progressContainer = document.getElementById("step-counter-container");
