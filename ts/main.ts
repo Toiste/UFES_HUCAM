@@ -1,65 +1,85 @@
-import {
-    loadOrGenerateSaveObjectAndStartEvent, localStorageKeyNameReset,
-    saveCreatedOrLoadedEvent,
-    saveSave
-} from "./save";
+import {asyncLocalStorage, createOrLoadSave, localStorageKeyNameReset, saveSave} from "./save";
 import {answerOptions, totalLivesPerRound} from "./data";
 import {
-    setAfterAnswerResult, toggleAfterAnswerResultVisibility,
     EShowAfterQuestion,
     optionsContainer,
     progressContainer,
     roundCounter,
+    setAfterAnswerResult,
+    setResultAfterEnd,
+    setTotalTime,
     startBtnElement,
     startScreen,
     stepContainer,
-    trashNameElement, updateQuestionsProgress,
-    vidas, setTotalTime, setResultAfterEnd
+    toggleAfterAnswerResultVisibility,
+    trashNameElement,
+    updateQuestionsProgress,
+    vidas
 } from "./elements";
 import {ETypeTimePerQuestion, Save} from "./types";
 import {getTimeDifference, getTotalMsTimeAllQuestions} from "./utils";
 import {gifCheckMark, gifConfetti, gifLike, gifWarning, gifWrongDecision} from "./assets";
-let dots = 0;
 
+let dots = 0;
 let groupSelected: string | null = null;
 let saveObject = {} as Save;
-let dotsInterval = setInterval(()=> {
-    startBtnElement.textContent = "Carregando"+".".repeat(dots);
-    if(dots >=3) dots = 0;
+let dotsInterval = setInterval(() => {
+    startBtnElement.textContent = "Carregando" + ".".repeat(dots);
+    if (dots >= 3) dots = 0;
     else dots = dots + 1;
 }, 500)
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.addEventListener(saveCreatedOrLoadedEvent, (e) => {
-        saveObject = (e as CustomEvent<Save>).detail;
-        // console.log("saveObject",saveObject)
-        clearInterval(dotsInterval);
-        startBtnElement.textContent = "Começar";
-        startBtnElement.className = "start-button";
+createOrLoadSave().then(x => {
+    // console.log("loaded or created")
+    saveObject = x;
+}).then(() => {
+    // console.log("prepping")
+    prepStart()
+    // console.log("prepped")
+}).then(() => {
+    // console.log("starting")
+    start()
+    // console.log("started")
+})
 
-        startBtnElement.addEventListener("click", function () {
-            startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
-            //Se o save foi carregado finalizado, não mostrar ao carregar
-            if (isFinalizedOrHasNoLivesRemaining()) return;
-            start()
-            setTimeout(() => {
-                startScreen.style.display = "none"; // Remove a tela depois da animação
-                stepContainer.style.display = "block";
-                optionsContainer.style.display = "flex";
-                progressContainer.style.display = "flex";
-            }, 1000); // Tempo deve ser igual ao da animação (1s)
+function prepStart() {
+    // console.log("saveObject",saveObject)
+    clearInterval(dotsInterval);
+    startBtnElement.textContent = "Começar";
+    // startBtnElement.className = "start-button";
 
-        });
-        if (window.location.hostname === "localhost" || window.localStorage.getItem(localStorageKeyNameReset) !== null) {
-            // console.log("aaaa")
-            startBtnElement.click()
-            window.localStorage.removeItem(localStorageKeyNameReset);
-            // showResults()
+    startBtnElement.addEventListener("click", function () {
+        startScreen.classList.add("hidden"); // Adiciona a classe que ativa o fade-out
+        //Se o save foi carregado finalizado, não mostrar ao carregar
+        if (isFinalizedOrHasNoLivesRemaining()) return;
+        setTimeout(() => {
+            startScreen.style.display = "none"; // Remove a tela depois da animação
+            stepContainer.style.display = "block";
+            optionsContainer.style.display = "flex";
+            progressContainer.style.display = "flex";
+        }, 1000); // Tempo deve ser igual ao da animação (1s)
+        start()
+
+    });
+    // console.log("removing")
+    asyncLocalStorage.getItem(localStorageKeyNameReset).then(x=> {
+        // console.log("removing 2")
+        if(x !== null || window.location.hostname === "localhost"){
+            // console.log("removing 3")
+            return asyncLocalStorage.removeItem(localStorageKeyNameReset).then(()=> {
+                startBtnElement.click()
+                // console.log("removed")
+            });
         }
-
     })
-    setTimeout(loadOrGenerateSaveObjectAndStartEvent, 500);
-});
+    //
+    // if (window.localStorage.getItem(localStorageKeyNameReset) !== null) {
+    //     // console.log("aaaa")
+    //     asyncLocalStorage.removeItem(localStorageKeyNameReset).then(()=> startBtnElement.click());
+    //     // showResults()
+    // }
+
+}
 
 function start() {
     updateVisuals()
@@ -70,8 +90,7 @@ function start() {
         loadStep()
 }
 
-function isFinalizedOrHasNoLivesRemaining()
-{
+function isFinalizedOrHasNoLivesRemaining() {
     // console.log("isLastQuestionOfLastRound() || hasNoLivesRemaining()", isLastQuestionOfLastRound() || hasNoLivesRemaining())
     return isLastQuestionOfLastRound() || hasNoLivesRemaining();
 }
@@ -187,7 +206,7 @@ function getNextTrashAndGenerateAnswersOptions() {
 */
 function loadStep() {
     groupSelected = null;
-    saveSave(saveObject);
+    void saveSave(saveObject);
     getNextTrashAndGenerateAnswersOptions()
     setTimePerQuestion(ETypeTimePerQuestion.START);
 
@@ -256,7 +275,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
         return
     }
     if (option === EShowAfterQuestion.NO_MORE_LIVES) {
-        
+
         setAfterAnswerResult({
             title: "Suas vidas acabaram!",
             img: gifWarning,
@@ -297,7 +316,7 @@ export function handleRespostaPergunta(option: EShowAfterQuestion | null = null)
 }
 
 function showResults() {
-    saveSave(saveObject)
+    void saveSave(saveObject)
     updateVisuals(isLastQuestionOfLastRound())
     setTotalTime(getTimeDifference(getTotalMsTimeAllQuestions(saveObject.timePerQuestion)));
     setResultAfterEnd(saveObject.correctAnswers, saveObject.totalQuestions);
